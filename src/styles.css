@@ -1,0 +1,39 @@
+QPushButton#collect {
+    background-color: white;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: gray;
+    padding: 10px;
+    margin-top: 5px;
+    font: bold 14px;
+    min-width: 250px;
+}
+
+QPushButton#collect:pressed {
+    border-style: inset;
+}
+
+QPushButton#connect {
+    background-color: white;
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: gray;
+    padding: 10px;
+    font: bold 14px;
+    min-width: 250px;
+
+}
+
+QPushButton#connect:pressed {
+    border-style: inset;
+}
+
+#display-box{
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    min-height: 500px;
+    min-width: 550px;
+}
