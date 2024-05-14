@@ -8,7 +8,6 @@ class Console(QWidget):
         # Display Area
         self.terminal = QLabel(self)
         self.terminal.setObjectName("display-box")
-        self.terminal.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.terminal.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 
         # Make Terminal Scrollable
@@ -18,3 +17,4 @@ class Console(QWidget):
         
         mainbox = QVBoxLayout(self)
         mainbox.addWidget(self.terminal)
+        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)

@@ -5,12 +5,22 @@ class ControlPanel(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.collect_data = QPushButton("Collect")
-        self.collect_data.setObjectName("collect")
-        self.connect = QPushButton("Connect Sensor")
-        self.connect.setObjectName("connect")
+        self.collect_btn = QPushButton("Collect")
+        self.collect_btn.setObjectName("collect_btn")
+        self.collect_btn.clicked.connect(self.send_data)
+
+        self.connect_btn = QPushButton("Connect")
+        self.connect_btn.setObjectName("connect_btn")
+        self.connect_btn.clicked.connect(self.send_data)
+
+        self.display_btn = QPushButton("Display")
+        self.display_btn.setObjectName("display_btn")
         
         mainbox = QVBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mainbox.addWidget(self.collect_data)
-        mainbox.addWidget(self.connect)
+        mainbox.addWidget(self.connect_btn)
+        mainbox.addWidget(self.collect_btn)
+        mainbox.addWidget(self.display_btn)
+
+    def send_data(self):
+        print(self.sender().text())
