@@ -21,7 +21,8 @@ class RbhSocket:
 		batch = self.socket.recv(64).decode('UTF-8')
 		# Collect batches of data
 		while batch != '':
-			self.data += self.socket.recv(2048).decode("UTF-8")
+			batch = self.socket.recv(2048).decode("UTF-8")
+			self.data += batch
 		# Organize data
 		self.data = self.data.split(',')
 		del self.data[-1]
