@@ -7,14 +7,13 @@ class Console(QWidget):
         self.textEdit = QTextEdit()
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName("display-box")
-        self.text = []
+        self.text = ''
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.textEdit)
 
     def update_data(self, data):
-        for i in range(50):
-            self.text.append(data)
-        text = "\n".join(self.text)
-        self.textEdit.setPlainText(text)
+        data = " ".join(data)
+        data += "\n"
+        self.textEdit.insertPlainText(data)
         
