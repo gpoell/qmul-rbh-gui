@@ -1,20 +1,19 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit
 
 class Console(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Display Area
-        self.terminal = QLabel(self)
-        self.terminal.setObjectName("display-box")
-        self.terminal.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        self.textEdit = QTextEdit()
+        self.textEdit.setReadOnly(True)
+        self.textEdit.setObjectName("display-box")
+        self.text = ''
 
-        # Make Terminal Scrollable
-        self.scroll_area = QScrollArea(self)
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.terminal)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.textEdit)
+
+    def update_data(self, data):
+        data = " ".join(data)
+        data += "\n"
+        self.textEdit.insertPlainText(data)
         
-        mainbox = QVBoxLayout(self)
-        mainbox.addWidget(self.terminal)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
