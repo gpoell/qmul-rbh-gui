@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout
 from containers.ControlPanel.ControlPanel import ControlPanel
 from containers.Console.Console import Console
 from components.RbhSocket import RbhSocket
-from src.utils.datalog import write_csv
+from src.utils.datalog import write_csv, data_format_sensor
 
 class Desktop(QWidget):
     def __init__(self):
@@ -39,16 +39,25 @@ class Desktop(QWidget):
 
     # Temporary method for testing data collection
     def collect_data(self):
-        # Collect Data from Sensor
-        self.sensor_socket.collect_sensor_data("collect")
-        
-        # Write Data to Console
-        
-        # Write Data to CSV
-        write_csv(self.sensor_socket.data)
+        # Write to Console
+        self.console.update("------------------------------------------------")
+        self.console.update("[INFO]: Collecting data from sensor...")
+        self.console.update("------------------------------------------------")
 
-        # Reset Data
-        self.sensor_socket.data = []
+        # # Collect Data from Sensor
+        # self.sensor_socket.collect_sensor_data("collect")
+
+        # # Format Data
+        # sensor_data = data_format_sensor(self.sensor_socket.data)
+        
+        # # Write Data to Console
+        
+
+        # # Write Data to CSV
+        # write_csv(sensor_data)
+
+        # # Reset Data
+        # self.sensor_socket.data = []
             
     def update_terminal(self):
         self.console.update_data(self.sensor_socket.data)
