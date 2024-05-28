@@ -12,8 +12,6 @@ class Console(QWidget):
         layout = QVBoxLayout(self)
         layout.addWidget(self.textEdit)
 
-    def update_data(self, data):
-        data = " ".join(data)
-        data += "\n"
+    def update(self, data):
         self.textEdit.insertPlainText(data)
-        
+        self.textEdit.insertPlainText("\n")
