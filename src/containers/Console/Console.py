@@ -14,4 +14,4 @@ class Console(QWidget):
 
     def update(self, data):
         self.textEdit.insertPlainText(data)
-        
+        self.textEdit.insertPlainText("\n")
