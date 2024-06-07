@@ -20,9 +20,11 @@ class Desktop(QWidget):
         self.sensor_socket = RbhSocket("127.0.0.1", 80) # read this from config file
 
         # Connect Signals and Slots
-        control_panel.connect_btn.clicked.connect(lambda: self.sensor_socket.connect())
-        control_panel.collect_btn.clicked.connect(self.collect_data)
-        control_panel.display_btn.clicked.connect(lambda: self.console.update_data(self.sensor_socket.data))
+        control_panel.sensor_ctrls.connect_btn.clicked.connect(lambda: self.sensor_socket.connect())
+        control_panel.sensor_ctrls.collect_btn.clicked.connect(self.collect_data)
+        control_panel.sensor_ctrls.display_btn.clicked.connect(lambda: self.console.update_data(self.sensor_socket.data))
+        control_panel.motor_ctrls.open_btn.clicked.connect(lambda: self.sensor_socket.collect_sensor_data("open"))
+        control_panel.motor_ctrls.close_btn.clicked.connect(lambda: self.sensor_socket.collect_sensor_data("close"))
 
         # Add Containers to Layouts
         top.addWidget(self.console)
