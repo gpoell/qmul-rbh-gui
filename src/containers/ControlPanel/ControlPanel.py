@@ -1,26 +1,16 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton
+from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton
 from PyQt6.QtCore import Qt
+from containers.ControlPanel.MotorControls import MotorControls
+from containers.ControlPanel.SensorControls import SensorControls
 
 class ControlPanel(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.collect_btn = QPushButton("Collect")
-        self.collect_btn.setObjectName("collect_btn")
-        self.collect_btn.clicked.connect(self.send_data)
+        self.motor_ctrls = MotorControls()
+        self.sensor_ctrls = SensorControls()
 
-        self.connect_btn = QPushButton("Connect")
-        self.connect_btn.setObjectName("connect_btn")
-        self.connect_btn.clicked.connect(self.send_data)
-
-        self.display_btn = QPushButton("Display")
-        self.display_btn.setObjectName("display_btn")
-        
-        mainbox = QVBoxLayout(self)
+        mainbox = QHBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mainbox.addWidget(self.connect_btn)
-        mainbox.addWidget(self.collect_btn)
-        mainbox.addWidget(self.display_btn)
-
-    def send_data(self):
-        print(self.sender().text())
+        mainbox.addWidget(self.sensor_ctrls)
+        mainbox.addWidget(self.motor_ctrls)

@@ -7,11 +7,20 @@ QPushButton {
     padding: 10px;
     margin-top: 5px;
     font: bold 14px;
-    min-width: 250px;
+    min-width: 200px;
+    max-width: 200px;
 }
 
 QPushButton:pressed {
     border-style: inset;
+}
+
+QPushButton:hover {
+    background-color: lightgray;
+}
+
+QLabel#container-label {
+    font: bold 15px;
 }
 
 #display-box{
