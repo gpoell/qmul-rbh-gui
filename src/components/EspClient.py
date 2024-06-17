@@ -1,11 +1,11 @@
 import socket
 
-class RbhSocket:
+class EspClient:
 	def __init__(self, host, port):
 		self.host = host
 		self.port = port
 		self.socket = 0
-		self.conn = False
+		self.conn = True
 		self.data = []
 
 	def connect(self):
@@ -18,16 +18,7 @@ class RbhSocket:
 		self.socket.shutdown(1)
 
 	def receive_data(self):
-		# Decode First Status Byte
-		batch = self.socket.recv(64).decode('UTF-8')
-
-		# Receive Data Batches
-		while batch != '':
-			batch = self.socket.recv(2048).decode("UTF-8")
-			self.data.append(batch)
-		
-		# Remove Terminating Byte
-		del self.data[-1]
+		return self.socket.recv(24).decode('UTF-8')
 	
 	def close(self):
 		self.socket.shutdown(0)
