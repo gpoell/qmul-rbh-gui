@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QObject, pyqtSignal as Signal, pyqtSlot as Slot
+from PyQt6.QtCore import QObject, pyqtSignal as Signal
 from components.EspClient import EspClient
 
 class TactileSensor(QObject):
