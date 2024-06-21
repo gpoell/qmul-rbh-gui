@@ -1,9 +1,11 @@
 import socket
+import yaml
 
 class EspClient:
-	def __init__(self, host, port):
-		self.host = host
-		self.port = port
+	def __init__(self):
+		self.host = 0
+		self.port = 0
+		self.set_connection_config()
 		self.socket = 0
 		self.conn = True
 		self.data = []
@@ -15,10 +17,11 @@ class EspClient:
 	
 	def send_data(self, msg):
 		self.socket.sendall(msg.encode("UTF-8"))
+		self.socket.send("\0".encode("UTF-8"))
 		self.socket.shutdown(1)
 
 	def receive_data(self):
-		return self.socket.recv(24).decode('UTF-8')
+		return self.socket.recv(64).decode('UTF-8')
 	
 	def close(self):
 		self.socket.shutdown(0)
@@ -30,3 +33,9 @@ class EspClient:
 		self.send_data(command)
 		self.receive_data()
 		self.close()
+
+	def set_connection_config(self):
+		with open('local_conf.yaml', 'r') as file:
+			conf = yaml.safe_load(file)
+			self.host = conf['client']['host']
+			self.port = conf['client']['port']
