@@ -61,15 +61,17 @@ The GUI is a multithreaded application that communicates with the ESP32 server o
 PyQt signals and slots are the primary mechanisms for how the various components communicate with each other. Components can emit signals of a specific type and are received by any slot actively listening for it. The process for connecting signals and slots can be confusing, so a detailed example of how this works is outlined below.
 
 When the user clicks the Connect button, the  "connect" command is emitted as a signal containing a string type and a name called "stateCommand".
+
 <b>SensorControls.py</b>
 
-`6.     sig_state_command = Signal(str, name="stateCommand")`</n>
+`6.     sig_state_command = Signal(str, name="stateCommand")`  
 `33.    self.sig_state_command.emit(command)`
 
 The State Machine has a slot decorator that actively listens for string signals with the name "stateCommand" and uses the value to process the command in its exec() method.
+
 <b>StateMachine.py</b>
 
-`41.     @Slot(str, name="stateCommand")`</n>
+`41.     @Slot(str, name="stateCommand")`  
 `42.     def exec(self, command):`
 
 </details>
