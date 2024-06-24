@@ -1,5 +1,5 @@
 # QMUL MSc Advanced Robotics
-# Soft Robotic Gripper GUI
+# Soft Robotic Gripper: Graphical User Interface
 
 ## Overview
 This application serves as an interface for operating the soft [robotic gripper,]() visualizing its tactile data, and integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt]() to simplify the composition of graphical components for managing its functionality. The documentation below provides a variety of information for installing the application dependencies and running the application, and an architectural overview explaining how the components are integrated and communicate with the Esp32 MCU to interface with the robotic gripper.
@@ -58,21 +58,39 @@ The GUI is a multithreaded application that communicates with the ESP32 server o
 <details>
 <summary>PyQt Signals and Slots</summary>
 
-PyQt signals and slots are the primary mechanisms for how the various components communicate with each other. Components can emit signals of a specific type and are received by any slot actively listening for it. The process for connecting signals and slots can be confusing, so a detailed example of how this works is outlined below.
+[PyQt Signals and Slots]() are the primary mechanisms for how the various components communicate with each other. Components can emit signals of a specific type to be received by other components with slots that are actively listening for those signals. The functionality of pressing the connect button to read tactile data from the gripper and display the data on the console is an example of how to use signals and slots, and is outlined in detail below.
 
-When the user clicks the Connect button, the  "connect" command is emitted as a signal containing a string type and a name called "stateCommand".
+When the Connect button (line 18) is clicked, it executes the emit_signal() function (line 19) which broadcasts a signal with the command and signal name (line 6).
 
 <b>SensorControls.py</b>
 
 `6.     sig_state_command = Signal(str, name="stateCommand")`  
+`18.    self.connect_btn = QPushButton("Connect")`  
+`19.    self.connect_btn.clicked.connect(lambda: self.emit_signal("connect"))`  
 `33.    self.sig_state_command.emit(command)`
 
-The State Machine has a slot decorator that actively listens for string signals with the name "stateCommand" and uses the value to process the command in its exec() method.
+The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to process the command in its exec() method (line 42). This creates a new thread which executes the Tactile Sensor connect method (line 60).
 
 <b>StateMachine.py</b>
 
 `41.     @Slot(str, name="stateCommand")`  
-`42.     def exec(self, command):`
+`42.     def exec(self, command):`  
+`58.     case "connect":`  
+`60.     worker = ThreadWorker(self.tactile_sensor.connect)`
+
+The Tactile Sensor connect method (line 31) reads data from the tactile sensor and emits it under a new signal (line 22; 54).
+
+<b>TactileSensor.py</b>
+
+`22.     sig_tactile_data = Signal(tuple, name='tactileData')`  
+`54.     self.sig_tactile_data.emit((batch[0], batch[1], batch[2]))`
+
+The Console contains a slot that actively listens for signals with a tuple type and "tactileData" name to display.
+
+<b>Console.py</b>
+
+`19.     @Slot(tuple, name="tactileData")`  
+`20.     def tactile_data_format(self, data):`
 
 </details>
 
