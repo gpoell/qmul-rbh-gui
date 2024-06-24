@@ -78,7 +78,7 @@ client:
 The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi. Commands sent to the server occur during events like pressing buttons. The buttons emit commands as [PyQt signals]() which are received by the State Machine's [PyQt Slots](). The State Machine is a centralized component responsible for monitoring the state of application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time.) and executing commands through seperate [threads]() which is vital for simultaneously reading tactile data and operating the gripper. Each thread maintains a connection with the server using [Python Sockets]() that follows the communication protocol outlined below. Incoming data received from the server is emitted to various GUI components to provide data for visualizations and information for the terminal.
 
 <picture>
-    <img src='docs/gui_architecture2.png'>
+    <img src='docs/gui_architecture.png'>
 </pictuer>
 
 <details>
