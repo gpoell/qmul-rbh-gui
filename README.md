@@ -122,8 +122,10 @@ Most of the variation in the steps outlined above occurs while receiving data fr
 
 </details>
 
+
+## PyQt Components
 <details>
-<summary>## PyQt Components</summary>
+<summary>Creating Components and Layout Management</summary>
 PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components must inherit from the QWidget class to properly render in the GUI.
 
 To conceptualize how the interface is built, everything is managed in boxes that may contain other boxes. The GUI itself is a large box with other smaller boxes aligned vertically and horizontally using layout management. For example, the buttons on the application live within boxes horizontally aligned to each other that make up the Control Panel. These buttons are grouped based on their Sensor (SensorControls.py) and Motor (MotorControls.py) functionality. For new contributors to this project, I encourage you to change the layout of the buttons to horizontal and flip how they are ordered in the Control Panel to get a feel for how the layouts work.
