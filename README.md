@@ -58,9 +58,9 @@ The GUI is a multithreaded application that communicates with the ESP32 server o
 <details>
 <summary>PyQt Signals and Slots</summary>
 
-[PyQt Signals and Slots]() are the primary mechanisms for how the various components communicate with each other. Components can emit signals of a specific type to be received by other components with slots that are actively listening for those signals. The functionality of pressing the connect button to read tactile data from the gripper and display the data on the console is an example of how to use signals and slots, and is outlined in detail below.
+[PyQt Signals and Slots]() are the primary mechanisms for how the various components communicate with each other. Components can emit signals of a specific type to be received by other components with slots that are actively listening for those signals. The functionality of pressing the connect button to read tactile data from the gripper and displaying its information on the console is a perfect example of how to use signals and slots.
 
-When the Connect button (line 18) is clicked, it executes the emit_signal() function (line 19) which broadcasts a signal with the command and signal name (line 6).
+When the Connect button (line 18, 19) is clicked, it executes the emit_signal() function (line 33) which broadcasts a signal with the command and signal name (line 6).
 
 <b>SensorControls.py</b>
 
@@ -69,7 +69,7 @@ When the Connect button (line 18) is clicked, it executes the emit_signal() func
 `19.    self.connect_btn.clicked.connect(lambda: self.emit_signal("connect"))`  
 `33.    self.sig_state_command.emit(command)`
 
-The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to process the command in its exec() method (line 42). This creates a new thread which executes the Tactile Sensor connect method (line 60).
+The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in seperate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
 
 <b>StateMachine.py</b>
 
@@ -78,14 +78,12 @@ The State Machine has a slot decorator (line 41) that actively listens for strin
 `58.     case "connect":`  
 `60.     worker = ThreadWorker(self.tactile_sensor.connect)`
 
-The Tactile Sensor connect method (line 31) reads data from the tactile sensor and emits it under a new signal (line 22; 54).
+The Tactile Sensor connect method reads data from the tactile sensor and emits it under a new signal (line 22; 54) that is received by the Console under its Slot decorator. The Console function wrapped by the Slot decorator executes when it receives signals with a tuple type and "tactileData" name which updates the information displayed on the console (line 19, 20).
 
 <b>TactileSensor.py</b>
 
 `22.     sig_tactile_data = Signal(tuple, name='tactileData')`  
 `54.     self.sig_tactile_data.emit((batch[0], batch[1], batch[2]))`
-
-The Console contains a slot that actively listens for signals with a tuple type and "tactileData" name to display.
 
 <b>Console.py</b>
 
