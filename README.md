@@ -26,7 +26,7 @@ Software     | Version
 Python3        | latest
 
 ### Python Libraries
-The following libraries are required to run the application and can be installed from the repository's [requirements.txt](https://github.com/gpoell/qmul-rbh-gui/blob/main/requirements.txt). See the next section, Running the Application, for more details. 
+The following libraries are required to run the application and can be installed from the repository's [requirements.txt](requirements.txt). See the next section, Running the Application, for more details. 
 Library     | Version
 ------      | ------
 PyQt        | PyQt6
@@ -61,6 +61,17 @@ python -m venv .
 ```
 . Scripts/activate
 pip install -r requirements.txt
+```
+3. Run the Application
+```
+python src/app.py
+```
+Note: the connection details to the ESP32 server are automatically read from a local configuration file called local_conf.yaml at the root level of your repository. The configuration file should have your connection details in the following [yaml](https://pypi.org/project/PyYAML/) format. 
+<b>local_conf.yaml</b>
+```
+client:
+    host: "hostname"
+    port: 5000
 ```
 </details>
 
