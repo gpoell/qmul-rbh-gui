@@ -4,9 +4,13 @@
 ## Overview
 This application serves as an interface for operating the soft [robotic gripper,](https://github.com/gpoell/qmul-rbh-esp32) visualizing its tactile sensor data, and collecting the tactile sensor data for additional processes such as integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components for managing its functionality.
 
-<picture>
-    <img src='docs/gui_snapshot.png' width="200">
-</pictuer>
+<div style="text-align:center">
+  <img src="docs/gui_snapshot.png" width="400px"/>
+</div>
+
+<!-- <picture>
+    <img src='docs/gui_snapshot.png' width="400">
+</pictuer> -->
 
 The documentation below provides a variety of information for installing the application dependencies and running the application, and an architectural overview explaining how the components are integrated and communicate with the Esp32 MCU to interface with the robotic gripper.
 
