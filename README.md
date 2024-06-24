@@ -95,7 +95,7 @@ The Tactile Sensor connect method reads data from the tactile sensor and emits i
 <details>
 <summary>PyQt Threads</summary>
 
-Threads are used to continuously read tactile data, open and close the gripper, and run additional processes (almost) simultaneously. Without threading, clicking the Connect button would block the user from trying to open and close the gripper. Threading is a big topic that is thoroughly explained in other articles (see Helpful Articles), so for the sake of brevity, an overview of how threads are leveraged in this application is outlined below.
+[Threads](https://docs.python.org/3/library/threading.html) are used to continuously read tactile data, open and close the gripper, and run additional processes (almost) simultaneously. Without threading, clicking the Connect button would block the user from trying to open and close the gripper. Threading is a big topic that is thoroughly explained in other articles (see Helpful Articles), so for the sake of brevity, an overview of how threads are leveraged in this application is outlined below.
 
 Every command sent to the ESP32 server is communicated through a unique thread. PyQt provides several components that simplify generating new threads ([QThreads](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThread.html)) and managing the lifecycle of multiple threads ([QThreadPool](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThreadPool.html)). As mentioned in the previous section, the State Machine facilitates the execution of server commands through threaded processes and managing the thread pool. Threaded processes are constructed by linking functions or object methods to the Thread Worker (see Threadworker.py) and started by adding them to the thread pool (see StateMachine.py below).
 
@@ -108,7 +108,17 @@ Every command sent to the ESP32 server is communicated through a unique thread. 
 <details>
 <summary>Python Socket Protocol</summary>
 
-[Python Sockets]() are network interfaces used to communicate with the Esp32 server. 
+[Python Sockets](https://docs.python.org/3/library/socket.html#) are used as the primary network interface for communicating with the Esp32 server. The Helpful Articles section contains additional resources that explain how these work in more detail, so the rest of this section explains how sockets are implemented within this application to communicate with the ESP32 server.
+
+Every command sent to the server is managed by a unique thread that contains a unique connection which is responsible for sending and receiving data specific to that command. The EspClient component (EspClient.py) handles a majority of the functionality for connecting to the server, sending data, receiving data, and closing the connection. These methods are utilized by Tactile Sensor (TactileSensor.py) and Motor (L9110HMotor.py) components to perform their respective functions (e.g. reading tactile data or moving the gripper) with their respective clients.
+
+The process for communicating with the server through sockets is generally the same:
+1. Connect to the server
+2. Send command
+3. Receive data from the server
+4. Close the connection
+
+Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of ### bytes (in progress) is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to minimize the waste.
 
 </details>
 
