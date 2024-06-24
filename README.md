@@ -44,11 +44,15 @@ Below are prerequisite instructions to clone the repository using SSH and runnin
 <summary>Running the application</summary>
 
 1. Create a [python virtual environment](https://docs.python.org/3/library/venv.html) at the root directory level of the repository
-    1. `cd qmul-rbh-gui`
-    2. `python -m venv .`
+    ```
+    cd qmul-rbh-gui
+    python -m venv .
+    ```
 2. Activate the virtual environment and install dependencies
-    1. `. Scripts/activate`
-    2. `pip install -r requirements.txt`
+    ```
+    . Scripts/activate
+    pip install -r requirements.txt
+    ```
 </details>
 
 
@@ -74,24 +78,26 @@ When the Connect button (line 18, 19) is clicked, it executes the emit_signal() 
 The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in seperate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
 
 <b>StateMachine.py</b>
-
-`41.     @Slot(str, name="stateCommand")`  
-`42.     def exec(self, command):`  
-`58.     case "connect":`  
-`60.     worker = ThreadWorker(self.tactile_sensor.connect)`
+```
+41.     @Slot(str, name="stateCommand")  
+42.     def exec(self, command):  
+58.     case "connect":  
+60.     worker = ThreadWorker(self.tactile_sensor.connect)
+```
 
 The Tactile Sensor connect method reads data from the tactile sensor and emits it under a new signal (line 22; 54) that is received by the Console under its Slot decorator. The Console function wrapped by the Slot decorator executes when it receives signals with a tuple type and "tactileData" name which updates the information displayed on the console (line 19, 20).
 
 <b>TactileSensor.py</b>
-
-`22.     sig_tactile_data = Signal(tuple, name='tactileData')`  
-`54.     self.sig_tactile_data.emit((batch[0], batch[1], batch[2]))`
+```
+22.     sig_tactile_data = Signal(tuple, name='tactileData')  
+54.     self.sig_tactile_data.emit((batch[0], batch[1], batch[2]))
+```
 
 <b>Console.py</b>
-
-`19.     @Slot(tuple, name="tactileData")`  
-`20.     def tactile_data_format(self, data):`
-
+```
+19.     @Slot(tuple, name="tactileData")  
+20.     def tactile_data_format(self, data):
+```
 </details>
 
 <details>
@@ -102,8 +108,9 @@ The Tactile Sensor connect method reads data from the tactile sensor and emits i
 Every command sent to the ESP32 server is communicated through a unique thread. PyQt provides several components that simplify generating new threads ([QThreads](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThread.html)) and managing the lifecycle of multiple threads ([QThreadPool](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThreadPool.html)). As mentioned in the previous section, the State Machine facilitates the execution of server commands through threaded processes and managing the thread pool. Threaded processes are constructed by linking functions or object methods to the Thread Worker (see Threadworker.py) and started by adding them to the thread pool (see StateMachine.py below).
 
 <b>StateMachine.py</b>
-
-`74.    self.threadpool.start(worker)`
+```
+74.    self.threadpool.start(worker)
+```
 
 </details>
 
@@ -157,16 +164,16 @@ Below is a summary of how the code for the GUI is organized. It leverages a cont
 ## Helpful Articles
 
 <b>Layout Management</b>
-[Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html)
+[Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html)  
 [Basic Layouts Example](https://doc.qt.io/qtforpython-5/overviews/qtwidgets-layouts-basiclayouts-example.html)
 
 <b>Sockets</b>
-[Python Sockets](https://docs.python.org/3/library/socket.html#)
+[Python Sockets](https://docs.python.org/3/library/socket.html#)  
 [Python Sockets How To](https://docs.python.org/3/howto/sockets.html)
 
 <b>Threading</b>
-[Implementing Multi-threaded Network Servers in Python (w3computing.com)](https://www.w3computing.com/articles/implementing-multi-threaded-network-servers-python/)
-[An Intro to Threading in Python – Real Python](https://realpython.com/intro-to-python-threading/)
-[Multithreading PyQt5 applications with QThreadPool](https://www.pythonguis.com/tutorials/multithreading-pyqt-applications-qthreadpool/)
-[PyQt Concurrency](https://doc.qt.io/qtforpython-6/overviews/qtconcurrentrun.html)
+[Implementing Multi-threaded Network Servers in Python (w3computing.com)](https://www.w3computing.com/articles/implementing-multi-threaded-network-servers-python/)  
+[An Intro to Threading in Python – Real Python](https://realpython.com/intro-to-python-threading/)  
+[Multithreading PyQt5 applications with QThreadPool](https://www.pythonguis.com/tutorials/multithreading-pyqt-applications-qthreadpool/)  
+[PyQt Concurrency](https://doc.qt.io/qtforpython-6/overviews/qtconcurrentrun.html)  
 [PyQt QThread](https://www.pythontutorial.net/pyqt/pyqt-qthread/)
