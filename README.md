@@ -8,8 +8,6 @@ This application serves as an interface for operating the soft [robotic gripper,
     <img src='docs/gui_snapshot.png' width="400">
 </pictuer>
 
-The documentation below provides a variety of information for installing the application dependencies and running the application, and an architectural overview explaining how the components are integrated and communicate with the Esp32 MCU to interface with the robotic gripper.
-
 ## Table of Contents
 1. [Installation and Dependencies](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#installation-and-dependencies)
 2. [Running the Application](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#running-the-application)
