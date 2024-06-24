@@ -66,11 +66,11 @@ pip install -r requirements.txt
 ```
 python src/app.py
 ```
-Note: the connection details to the ESP32 server are automatically read from a local configuration file called local_conf.yaml at the root level of your repository. The configuration file should have your connection details in the following [yaml](https://pypi.org/project/PyYAML/) format. 
+Note: the connection details to the ESP32 server are automatically read from a local configuration file called local_conf.yaml at the root level of your repository. The configuration file should have your connection details in the following [yaml](https://pypi.org/project/PyYAML/) format.  
 <b>local_conf.yaml</b>
 ```
 client:
-    host: "hostname"
+    host: "127.0.0.1"
     port: 5000
 ```
 </details>
@@ -78,6 +78,10 @@ client:
 
 ## Application Architecture
 The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi. Commands sent to the server occur during events like pressing buttons. The buttons emit commands as [PyQt signals]() which are received by the State Machine's [PyQt Slots](). The State Machine is a centralized component responsible for monitoring the state of application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time.) and executing commands through seperate [threads]() which is vital for simultaneously reading tactile data and operating the gripper. Each thread maintains a connection with the server using [Python Sockets]() that follows the communication protocol outlined below. Incoming data received from the server is emitted to various GUI components to provide data for visualizations and information for the terminal.
+
+<picture>
+    <img src='docs/gui_architecture.png'>
+</pictuer>
 
 <details>
 <summary>PyQt Signals and Slots</summary>
