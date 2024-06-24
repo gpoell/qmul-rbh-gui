@@ -118,11 +118,23 @@ The process for communicating with the server through sockets is generally the s
 3. Receive data from the server
 4. Close the connection
 
-Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of ### bytes (in progress) is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to minimize the waste.
+Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of ### bytes (in progress) is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to minimize the waste. For now, the prefixed size is small enough to avoid noticeable performance issues.
 
 </details>
 
-## PyQt Components
+<details>
+<summary>## PyQt Components</summary>
+PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components must inherit from the QWidget class to properly render in the GUI.
 
+To conceptualize how the interface is built, everything is managed in boxes that may contain other boxes. The GUI itself is a large box with other smaller boxes aligned vertically and horizontally using layout management. For example, the buttons on the application live within boxes horizontally aligned to each other that make up the Control Panel. These buttons are grouped based on their Sensor (SensorControls.py) and Motor (MotorControls.py) functionality. For new contributors to this project, I encourage you to change the layout of the buttons to horizontal and flip how they are ordered in the Control Panel to get a feel for how the layouts work.
+
+Building further on this nested box concept, there is a hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of smaller containers (e.g. Console.py and ControlPanel.py) which consist of Components that consist of Widgets. There are a lot of resources on how to create simple GUIs with small components but I found very few that talked about how to organize components to help with maintainability. Hopefully this helps you too.
+
+Lastly, the creation of every container and component follows the same standard process:
+1. Create the main layout and any sublayouts
+2. Create the widgets or components
+3. Add the widgets to the layouts
+
+</details>
  
 ## Repository Folder Structure
