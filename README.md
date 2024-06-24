@@ -93,7 +93,22 @@ The Tactile Sensor connect method reads data from the tactile sensor and emits i
 </details>
 
 <details>
+<summary>PyQt Threads</summary>
+
+Threads are used to continuously read tactile data, open and close the gripper, and run additional processes (almost) simultaneously. Without threading, clicking the Connect button would block the user from trying to open and close the gripper. Threading is a big topic that is thoroughly explained in other articles (see Helpful Articles), so for the sake of brevity, an overview of how threads are leveraged in this application is outlined below.
+
+Every command sent to the ESP32 server is communicated through a unique thread. PyQt provides several components that simplify generating new threads ([QThreads](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThread.html)) and managing the lifecycle of multiple threads ([QThreadPool](https://doc.qt.io/qtforpython-5/PySide2/QtCore/QThreadPool.html)). As mentioned in the previous section, the State Machine facilitates the execution of server commands through threaded processes and managing the thread pool. Threaded processes are constructed by linking functions or object methods to the Thread Worker (see Threadworker.py) and started by adding them to the thread pool (see StateMachine.py below).
+
+<b>StateMachine.py</b>
+
+`74.    self.threadpool.start(worker)`
+
+</details>
+
+<details>
 <summary>Python Socket Protocol</summary>
+
+[Python Sockets]() are network interfaces used to communicate with the Esp32 server. 
 
 </details>
 
