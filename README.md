@@ -2,7 +2,7 @@
 # Soft Robotic Gripper: Graphical User Interface
 
 ## Overview
-This application serves as an interface for operating the soft [robotic gripper,]() visualizing its tactile data, and integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt]() to simplify the composition of graphical components for managing its functionality. The documentation below provides a variety of information for installing the application dependencies and running the application, and an architectural overview explaining how the components are integrated and communicate with the Esp32 MCU to interface with the robotic gripper.
+This application serves as an interface for operating the soft [robotic gripper,](https://github.com/gpoell/qmul-rbh-esp32) visualizing its tactile data, and integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components for managing its functionality. The documentation below provides a variety of information for installing the application dependencies and running the application, and an architectural overview explaining how the components are integrated and communicate with the Esp32 MCU to interface with the robotic gripper.
 
 ## Table of Contents
 1. Installation and Dependencies
@@ -64,10 +64,12 @@ When the Connect button (line 18, 19) is clicked, it executes the emit_signal() 
 
 <b>SensorControls.py</b>
 
-`6.     sig_state_command = Signal(str, name="stateCommand")`  
-`18.    self.connect_btn = QPushButton("Connect")`  
-`19.    self.connect_btn.clicked.connect(lambda: self.emit_signal("connect"))`  
-`33.    self.sig_state_command.emit(command)`
+```
+6.     sig_state_command = Signal(str, name="stateCommand")  
+18.    self.connect_btn = QPushButton("Connect")  
+19.    self.connect_btn.clicked.connect(lambda: self.emit_signal("connect"))  
+33.    self.sig_state_command.emit(command)
+```
 
 The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in seperate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
 
@@ -153,3 +155,18 @@ Below is a summary of how the code for the GUI is organized. It leverages a cont
 * styles.css
 
 ## Helpful Articles
+
+<b>Layout Management</b>
+[Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html)
+[Basic Layouts Example](https://doc.qt.io/qtforpython-5/overviews/qtwidgets-layouts-basiclayouts-example.html)
+
+<b>Sockets</b>
+[Python Sockets](https://docs.python.org/3/library/socket.html#)
+[Python Sockets How To](https://docs.python.org/3/howto/sockets.html)
+
+<b>Threading</b>
+[Implementing Multi-threaded Network Servers in Python (w3computing.com)](https://www.w3computing.com/articles/implementing-multi-threaded-network-servers-python/)
+[An Intro to Threading in Python – Real Python](https://realpython.com/intro-to-python-threading/)
+[Multithreading PyQt5 applications with QThreadPool](https://www.pythonguis.com/tutorials/multithreading-pyqt-applications-qthreadpool/)
+[PyQt Concurrency](https://doc.qt.io/qtforpython-6/overviews/qtconcurrentrun.html)
+[PyQt QThread](https://www.pythontutorial.net/pyqt/pyqt-qthread/)
