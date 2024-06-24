@@ -37,22 +37,25 @@ Below are prerequisite instructions to clone the repository using SSH and runnin
 2. Connect to your GitHub account with SSH: [Connecting to GitHub with SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh "Connecting to GitHub with SSH"). Specifically use the instructions below
     1. <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent>
     2. <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account>
-3. Clone the repository: `git@github.com:gpoell/qmul-rbh-gui.git`
+3. Clone the repository:
+```
+git@github.com:gpoell/qmul-rbh-gui.git
+```
 </details>
 
 <details>
 <summary>Running the application</summary>
 
 1. Create a [python virtual environment](https://docs.python.org/3/library/venv.html) at the root directory level of the repository
-    ```
-    cd qmul-rbh-gui
-    python -m venv .
-    ```
+```
+cd qmul-rbh-gui
+python -m venv .
+```
 2. Activate the virtual environment and install dependencies
-    ```
-    . Scripts/activate
-    pip install -r requirements.txt
-    ```
+```
+. Scripts/activate
+pip install -r requirements.txt
+```
 </details>
 
 
@@ -163,15 +166,15 @@ Below is a summary of how the code for the GUI is organized. It leverages a cont
 
 ## Helpful Articles
 
-<b>Layout Management</b>
+<b>Layout Management</b>  
 [Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html)  
 [Basic Layouts Example](https://doc.qt.io/qtforpython-5/overviews/qtwidgets-layouts-basiclayouts-example.html)
 
-<b>Sockets</b>
+<b>Sockets</b>  
 [Python Sockets](https://docs.python.org/3/library/socket.html#)  
 [Python Sockets How To](https://docs.python.org/3/howto/sockets.html)
 
-<b>Threading</b>
+<b>Threading</b>  
 [Implementing Multi-threaded Network Servers in Python (w3computing.com)](https://www.w3computing.com/articles/implementing-multi-threaded-network-servers-python/)  
 [An Intro to Threading in Python – Real Python](https://realpython.com/intro-to-python-threading/)  
 [Multithreading PyQt5 applications with QThreadPool](https://www.pythonguis.com/tutorials/multithreading-pyqt-applications-qthreadpool/)  
