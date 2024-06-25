@@ -20,7 +20,7 @@ from utils.datalog import write_csv
 class TactileSensor(QObject):
 
     sig_tactile_data = Signal(tuple, name='tactileData')
-    sig_console_msg = Signal(str, name="consoleMessage")
+    sig_console_msg = Signal(dict, name="consoleMessage")
 
     def __init__(self):
         super().__init__()
@@ -44,11 +44,12 @@ class TactileSensor(QObject):
         while batch != '':
             batch = client.receive_data()
             if not batch : break
-            print(batch) # need to solve for byte length
+            # print(batch) # need to solve for byte length
             batch = batch.split(',')
 
             # Collect data when the collect button is pressed
-            if self.collect_flag: self.collect_data.append([batch[0], batch[1], batch[2]])
+            if self.collect_flag:
+                self.collect_data.append([batch[0], batch[1], batch[2]])
 
             # Emit tactile sensor data
             self.sig_tactile_data.emit((batch[0], batch[1], batch[2]))
@@ -67,19 +68,12 @@ class TactileSensor(QObject):
         
         # Start collecting data
         self.collect_flag = True
-        self.sig_console_msg.emit("------COLLECTED--------")
 
         # Wait for collected data to reach sample length
         while len(self.collect_data) < sample: continue
 
         # Stop collecting data
         self.collect_flag = False
-        self.sig_console_msg.emit("------COLLECTED--------")
-
-        # Temporary print to test
-        for i in self.collect_data:
-            print(i)
-        print(len(self.collect_data))
 
         # Write data to CSV file
         write_csv(self.collect_data)
