@@ -8,11 +8,11 @@ class Desktop(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Create Desktop Layouts
+        # Desktop Layouts
         main = QVBoxLayout(self)
         main.setObjectName("desktop")
         top = QHBoxLayout()
-        bottom = QVBoxLayout()
+        bottom = QHBoxLayout()
 
         # Create Components
         control_panel = ControlPanel()
@@ -28,9 +28,9 @@ class Desktop(QWidget):
         control_panel.sensor_ctrls.sig_state_command.connect(self.stateMachine.exec)
 
         # Add Containers to Layouts
-        top.addWidget(self.console)
         top.addWidget(graph)
         bottom.addWidget(control_panel)
+        bottom.addWidget(self.console)
 
         # Add Layouts to Main Layout
         main.addLayout(top)

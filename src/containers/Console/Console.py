@@ -1,8 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit, QApplication, QScrollArea
-from PyQt6.QtCore import Qt, QSize
-from time import sleep
-from threading import Lock
-
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTextEdit
 from PyQt6.QtCore import pyqtSlot as Slot
 
 class Console(QWidget):
