@@ -23,7 +23,7 @@ QLabel#container-label {
     font: bold 15px;
 }
 
-#display-box{
+#console{
     background-color: white;
     border: 1px solid black;
     padding: 5px;

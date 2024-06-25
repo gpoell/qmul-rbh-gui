@@ -8,11 +8,11 @@ class Desktop(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Create Desktop Layouts
+        # Desktop Layouts
         main = QVBoxLayout(self)
         main.setObjectName("desktop")
         top = QHBoxLayout()
-        bottom = QVBoxLayout()
+        bottom = QHBoxLayout()
 
         # Create Components
         control_panel = ControlPanel()
@@ -21,16 +21,16 @@ class Desktop(QWidget):
         graph = LineGraph()
 
         # Connect Signals and Slots
-        self.stateMachine.tactile_sensor.sig_tactile_data.connect(self.console.tactile_data_format)
+        self.stateMachine.sig_console_msg.connect(self.console.update_console)
         self.stateMachine.tactile_sensor.sig_tactile_data.connect(graph.update_plot)
-        self.stateMachine.tactile_sensor.sig_console_msg.connect(self.console.update)
+        self.stateMachine.tactile_sensor.sig_console_msg.connect(self.console.update_console)
         control_panel.motor_ctrls.sig_state_command.connect(self.stateMachine.exec)
         control_panel.sensor_ctrls.sig_state_command.connect(self.stateMachine.exec)
 
         # Add Containers to Layouts
-        top.addWidget(self.console)
         top.addWidget(graph)
         bottom.addWidget(control_panel)
+        bottom.addWidget(self.console)
 
         # Add Layouts to Main Layout
         main.addLayout(top)
