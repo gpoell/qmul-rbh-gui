@@ -7,7 +7,7 @@ class Console(QWidget):
 
         self.textEdit = QTextEdit()
         self.textEdit.setReadOnly(True)
-        self.textEdit.setObjectName("display-box")
+        self.textEdit.setObjectName("console")
 
         layout = QVBoxLayout(self)
         layout.addWidget(self.textEdit)
