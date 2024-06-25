@@ -24,12 +24,14 @@ Methods:
     disconnect
 """
 
-from PyQt6.QtCore import QThreadPool, QObject, pyqtSlot as Slot
+from PyQt6.QtCore import QThreadPool, QObject, pyqtSlot as Slot, pyqtSignal as Signal
 from components.TactileSensor import TactileSensor
 from components.L9110HMotor import L9110HMotor
 from components.ThreadWorker import ThreadWorker
 
 class StateMachine(QObject):
+
+    sig_console_msg = Signal(dict, name="consoleMessage")
 
     def __init__(self):
         super().__init__()
@@ -54,21 +56,35 @@ class StateMachine(QObject):
                     - open: opens motor at predetermined duration on ESP32 server
                     - close: closes motor at predetermined duration on ESP32 server
         """
+        console_message = {
+            "header": "",
+            "body": ""
+        }
         match command:
             case "connect":
+                console_message["body"] = "Connecting to tactile sensor."
                 self.state = "running"
                 worker = ThreadWorker(self.tactile_sensor.connect)
             case "collect":
+                console_message["body"] = "Collecting tactile sensor data..."
                 worker = ThreadWorker(self.tactile_sensor.collect)
             case "open":
+                console_message["body"] = "Opening Gripper..."
+                self.sig_console_msg.emit(console_message)
                 worker = ThreadWorker(lambda: self.motor.move("open"))
             case "close":
+                console_message["body"] = "Closing Gripper..."
                 worker = ThreadWorker(lambda: self.motor.move("close"))
             case "disconnect":
+                console_message["body"] = "Disconnecting tactile sensor thread."
                 self.state = "idle"
                 worker = ThreadWorker(self.tactile_sensor.disconnect)
             case _:
-                print("[WARNING]: Command not recognized by server.")
+                console_message["header"] = "warning"
+                console_message["body"] = "Command not recognized by server."
+                self.sig_console_msg.emit(console_message)
                 return
 
         self.threadpool.start(worker)
+        console_message["header"] = "info"
+        self.sig_console_msg.emit(console_message)
