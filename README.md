@@ -43,7 +43,7 @@ Below are prerequisite instructions to clone the repository using SSH and runnin
     2. <https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account>
 3. Clone the repository:
 ```
-git@github.com:gpoell/qmul-rbh-gui.git
+git clone git@github.com:gpoell/qmul-rbh-gui.git
 ```
 </details>
 
