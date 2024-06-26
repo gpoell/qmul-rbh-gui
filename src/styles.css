@@ -28,3 +28,26 @@ QLabel#container-label {
     border: 1px solid black;
     padding: 5px;
 }
+
+#dataLabelValue {
+    background-color: white;
+    padding: 10px;
+    min-width: 100px;
+    font-size: 20px;
+}
+
+#dataLabelLabel {
+    color: white;
+    font-size: 24px;
+    padding-left: 5px;
+}
+
+#dataLabelsHeader {
+    font-size: 18px;
+    padding-bottom: 20px;
+}
+
+#logo {
+    width: 200px;
+    height: 150px;
+}
