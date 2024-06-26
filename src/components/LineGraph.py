@@ -18,7 +18,6 @@ Methods:
 """
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from PyQt6.QtCore import pyqtSlot as Slot
 import pyqtgraph as pg
 
 class LineGraph(QWidget):
@@ -43,7 +42,7 @@ class LineGraph(QWidget):
             self.time,
             self.tactile_data['x'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color=(255, 0, 0)),
+            pen=pg.mkPen(color="#061E45"),
             symbol="o",
             symbolSize=7,
             symbolBrush=0.9,
@@ -53,7 +52,7 @@ class LineGraph(QWidget):
             self.time,
             self.tactile_data['y'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color=(0, 255, 0)),
+            pen=pg.mkPen(color="#B87333"),
             symbol="o",
             symbolSize=7,
             symbolBrush=0.2,
@@ -63,7 +62,7 @@ class LineGraph(QWidget):
             self.time,
             self.tactile_data['y'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color=(0, 255, 0)),
+            pen=pg.mkPen(color="#36454F"),
             symbol="o",
             symbolSize=7,
             symbolBrush=0.2,
@@ -71,8 +70,7 @@ class LineGraph(QWidget):
 
         mainbox.addWidget(self.graph)
 
-    @Slot(tuple, name="tactileData")
-    def update_plot(self, data):
+    def plot(self, data):
         """
         Updates the graph with new lines representing the 3 dimensional tactile data.
         The time and data values maintain their original length by removing the first
