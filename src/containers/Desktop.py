@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout
 from containers.ControlPanel.ControlPanel import ControlPanel
 from containers.Console.Console import Console
+from containers.Dashboard.Dashboard import Dashboard
 from components.StateMachine import StateMachine
-from components.LineGraph import LineGraph
 
 class Desktop(QWidget):
     def __init__(self):
@@ -18,17 +18,17 @@ class Desktop(QWidget):
         control_panel = ControlPanel()
         self.stateMachine = StateMachine()
         self.console = Console()
-        graph = LineGraph()
+        self.dashboard = Dashboard()
 
         # Connect Signals and Slots
         self.stateMachine.sig_console_msg.connect(self.console.update_console)
-        self.stateMachine.tactile_sensor.sig_tactile_data.connect(graph.update_plot)
+        self.stateMachine.tactile_sensor.sig_tactile_data.connect(self.dashboard.updateDashboard)
         self.stateMachine.tactile_sensor.sig_console_msg.connect(self.console.update_console)
         control_panel.motor_ctrls.sig_state_command.connect(self.stateMachine.exec)
         control_panel.sensor_ctrls.sig_state_command.connect(self.stateMachine.exec)
 
         # Add Containers to Layouts
-        top.addWidget(graph)
+        top.addWidget(self.dashboard)
         bottom.addWidget(control_panel)
         bottom.addWidget(self.console)
 
