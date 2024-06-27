@@ -38,13 +38,12 @@ class TactileSensor(QObject):
         self.state = "connected"
 
         # Read acknowledge bit response from server
-        batch = client.receive_data()
+        batch = client.receive_data(1)
 
 		# Continuously process data until null bit terminator is received
         while batch != '':
-            batch = client.receive_data()
+            batch = client.receive_data(64)
             if not batch : break
-            # print(batch) # need to solve for byte length
             batch = batch.split(',')
 
             # Collect data when the collect button is pressed
