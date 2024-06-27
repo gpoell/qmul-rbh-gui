@@ -16,6 +16,7 @@ Methods:
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout,  QLabel
 from PyQt6.QtCore import Qt
 from containers.Dashboard.DataLabel import DataLabel
+import decimal
 
 class DataLabels(QWidget):
     def __init__(self):
@@ -36,6 +37,6 @@ class DataLabels(QWidget):
         mainbox.addWidget(self.z)
 
     def updateLabels(self, data):
-        self.x.value.setText(str(data[0]))
-        self.y.value.setText(str(data[1]))
-        self.z.value.setText(str(data[2]))
+        self.x.value.setText(str(float(data[0])))
+        self.y.value.setText(str(float(data[1])))
+        self.z.value.setText(str(float(data[2])))

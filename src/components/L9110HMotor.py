@@ -40,11 +40,11 @@ class L9110HMotor:
         self.state = "running"
 
         # Read acknowledge bit response from server
-        batch = client.receive_data()
+        batch = client.receive_data(1)
 
         # Continuously process data until null bit terminator is received
         while batch != '':
-            batch = client.receive_data()
+            batch = client.receive_data(64)
             if not batch : break
             print(f"Motor Direction: {batch}")
 
