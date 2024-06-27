@@ -20,8 +20,8 @@ class EspClient:
 		self.socket.send("\0".encode("UTF-8"))
 		self.socket.shutdown(1)
 
-	def receive_data(self):
-		return self.socket.recv(64).decode('UTF-8')
+	def receive_data(self, buffSize):
+		return self.socket.recv(buffSize).decode('UTF-8')
 	
 	def close(self):
 		self.socket.shutdown(0)
