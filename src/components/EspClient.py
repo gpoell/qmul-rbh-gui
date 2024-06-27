@@ -8,7 +8,6 @@ class EspClient:
 		self.set_connection_config()
 		self.socket = 0
 		self.conn = True
-		self.data = []
 
 	def connect(self):
 		self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -27,12 +26,6 @@ class EspClient:
 		self.socket.shutdown(0)
 		self.socket.close()
 		self.conn = False
-
-	def collect_sensor_data(self, command):
-		self.connect()
-		self.send_data(command)
-		self.receive_data()
-		self.close()
 
 	def set_connection_config(self):
 		with open('local_conf.yaml', 'r') as file:
