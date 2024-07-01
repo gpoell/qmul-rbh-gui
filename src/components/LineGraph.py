@@ -19,6 +19,7 @@ Methods:
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 import pyqtgraph as pg
+import math
 
 class LineGraph(QWidget):
     def __init__(self):
@@ -31,8 +32,7 @@ class LineGraph(QWidget):
         self.graph.showGrid(x=False,y=False)
 
         self.time = list(range(10))
-
-        self.tactile_data = {
+        self.data = {
             "x": [0 for _ in range(10)],
             "y": [0 for _ in range(10)],
             "z": [0 for _ in range(10)]
@@ -40,7 +40,7 @@ class LineGraph(QWidget):
 
         self.line_x = self.graph.plot(
             self.time,
-            self.tactile_data['x'],
+            self.data['x'],
             name="Tactile Sensor",
             pen=pg.mkPen(color="#061E45"),
             symbol="o",
@@ -50,7 +50,7 @@ class LineGraph(QWidget):
 
         self.line_y = self.graph.plot(
             self.time,
-            self.tactile_data['y'],
+            self.data['y'],
             name="Tactile Sensor",
             pen=pg.mkPen(color="#B87333"),
             symbol="o",
@@ -60,7 +60,7 @@ class LineGraph(QWidget):
 
         self.line_z = self.graph.plot(
             self.time,
-            self.tactile_data['y'],
+            self.data['z'],
             name="Tactile Sensor",
             pen=pg.mkPen(color="#36454F"),
             symbol="o",
@@ -76,17 +76,14 @@ class LineGraph(QWidget):
         The time and data values maintain their original length by removing the first
         element and appending the new data to the end.
         """
-        self.time = self.time[1:]
+
+        del self.time[0]
         self.time.append(self.time[-1] + 1)
-            
-        self.tactile_data['x'] = self.tactile_data['x'][1:]
-        self.tactile_data['y'] = self.tactile_data['y'][1:]
-        self.tactile_data['z'] = self.tactile_data['z'][1:]
 
-        self.tactile_data['x'].append(float(data[0]))
-        self.tactile_data['y'].append(float(data[1]))
-        self.tactile_data['z'].append(float(data[2]))
-
-        self.line_x.setData(self.time, self.tactile_data['x'])
-        self.line_y.setData(self.time, self.tactile_data['y'])
-        self.line_z.setData(self.time, self.tactile_data['z'])
+        for (key, val) in zip(self.data, data):
+            del self.data[key][0]
+            self.data[key].append(float(val))
+        
+        self.line_x.setData(self.time, self.data['x'])
+        self.line_y.setData(self.time, self.data['y'])
+        self.line_z.setData(self.time, self.data['z'])
