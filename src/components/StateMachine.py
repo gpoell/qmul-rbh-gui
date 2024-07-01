@@ -24,10 +24,9 @@ Methods:
     disconnect
 """
 
-from PyQt6.QtCore import QThreadPool, QObject, pyqtSlot as Slot, pyqtSignal as Signal
+from PyQt6.QtCore import QThreadPool, QObject, QRunnable, pyqtSlot as Slot, pyqtSignal as Signal
 from components.TactileSensor import TactileSensor
 from components.L9110HMotor import L9110HMotor
-from components.ThreadWorker import ThreadWorker
 
 class StateMachine(QObject):
 
@@ -88,3 +87,15 @@ class StateMachine(QObject):
         self.threadpool.start(worker)
         console_message["header"] = "info"
         self.sig_console_msg.emit(console_message)
+    
+
+class ThreadWorker(QRunnable):
+    def __init__(self, func, *args, **kwargs):
+        super(ThreadWorker, self).__init__()
+        self.func = func
+        self.args = args
+        self.kwargs = kwargs
+
+    @Slot()
+    def run(self):
+        self.func(*self.args, **self.kwargs)
