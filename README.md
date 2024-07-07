@@ -1,4 +1,4 @@
-# QMUL MSc Advanced Robotics
+# Queen Mary University of London: MSc Advanced Robotics
 # Soft Robotic Gripper: Graphical User Interface
 
 ## Overview
