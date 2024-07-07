@@ -1,6 +1,6 @@
 # Queen Mary University of London
 ## MSc Advanced Robotics
-## Soft Robotic Gripper: Graphical User Interface
+### Soft Robotic Gripper - Graphical User Interface
 
 ## Overview
 This application serves as an interface for operating the soft [robotic gripper,](https://github.com/gpoell/qmul-rbh-esp32) visualizing its tactile sensor data, and collecting the tactile sensor data for additional processes such as integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components for managing its functionality.
