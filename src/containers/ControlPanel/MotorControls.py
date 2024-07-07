@@ -19,7 +19,7 @@ class MotorControls(QWidget):
         self.close_btn.clicked.connect(lambda: self.emit_signal("close"))
 
         mainbox = QVBoxLayout(self)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mainbox.setAlignment(Qt.AlignmentFlag.AlignTop)
         mainbox.addWidget(self.label)
         mainbox.addWidget(self.open_btn)
         mainbox.addWidget(self.close_btn)
