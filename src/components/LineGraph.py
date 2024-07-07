@@ -27,9 +27,10 @@ class LineGraph(QWidget):
 
         mainbox = QVBoxLayout(self)
 
-        self.graph = pg.PlotWidget()
-        self.graph.setBackground("w")
-        self.graph.showGrid(x=False,y=False)
+        self.graph = pg.PlotWidget(background="#3B3B3B")
+        self.graph.showGrid(x=True,y=False)
+        self.graph.setLabel("left", "Magnetic Flux Density")
+        self.graph.setLabel("bottom", "Tactile Data Records")
 
         self.time = list(range(10))
         self.data = {
@@ -42,9 +43,9 @@ class LineGraph(QWidget):
             self.time,
             self.data['x'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color="#061E45"),
+            pen=pg.mkPen(color="#0C746A", width=3),
             symbol="o",
-            symbolSize=7,
+            symbolSize=4,
             symbolBrush=0.9,
         )
 
@@ -52,9 +53,9 @@ class LineGraph(QWidget):
             self.time,
             self.data['y'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color="#B87333"),
+            pen=pg.mkPen(color="#AFBBAF", width=3),
             symbol="o",
-            symbolSize=7,
+            symbolSize=4,
             symbolBrush=0.2,
         )
 
@@ -62,10 +63,10 @@ class LineGraph(QWidget):
             self.time,
             self.data['z'],
             name="Tactile Sensor",
-            pen=pg.mkPen(color="#36454F"),
+            pen=pg.mkPen(color="#6F8695", width=3),
             symbol="o",
-            symbolSize=7,
-            symbolBrush=0.2,
+            symbolSize=4,
+            symbolBrush=0.9,
         )
 
         mainbox.addWidget(self.graph)

@@ -11,7 +11,7 @@ Methods:
     updateDashboard: updates the graph and labels with new tactile data
 """
 
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSlot as Slot
 from containers.Dashboard.DataLabels import DataLabels
 from components.LineGraph import LineGraph
@@ -23,14 +23,11 @@ class Dashboard(QWidget):
         self.data_labels = DataLabels()
         self.data_graph = LineGraph()
 
-        mainbox = QVBoxLayout(self)
+        mainbox = QHBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        databox = QHBoxLayout()
 
-        databox.addWidget(self.data_labels)
-        databox.addWidget(self.data_graph)
-
-        mainbox.addLayout(databox)
+        mainbox.addWidget(self.data_graph)
+        mainbox.addWidget(self.data_labels)
 
     @Slot(tuple, name="tactileData")
     def updateDashboard(self, data):

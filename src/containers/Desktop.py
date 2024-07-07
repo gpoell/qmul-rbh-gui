@@ -3,6 +3,7 @@ from containers.ControlPanel.ControlPanel import ControlPanel
 from containers.Console.Console import Console
 from containers.Dashboard.Dashboard import Dashboard
 from components.StateMachine import StateMachine
+from components.Logo import Logo
 
 class Desktop(QWidget):
     def __init__(self):
@@ -15,6 +16,7 @@ class Desktop(QWidget):
         bottom = QHBoxLayout()
 
         # Create Components
+        self.logo = Logo()
         control_panel = ControlPanel()
         self.stateMachine = StateMachine()
         self.console = Console()
@@ -33,6 +35,7 @@ class Desktop(QWidget):
         bottom.addWidget(self.console)
 
         # Add Layouts to Main Layout
+        main.addWidget(self.logo)
         main.addLayout(top)
         main.addLayout(bottom)
 
