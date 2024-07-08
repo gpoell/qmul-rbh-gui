@@ -3,7 +3,7 @@
 ### Soft Robotic Gripper - Graphical User Interface
 
 <picture>
-    <img src='docs/gui_snapshot.png'>
+    <img src='docs/gui_snapshot.png' width='600'>
 </pictuer>
 
 ## Overview
