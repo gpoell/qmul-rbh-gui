@@ -146,7 +146,7 @@ Every command sent to the ESP32 server is communicated through a unique thread. 
 
 [Python Sockets](https://docs.python.org/3/library/socket.html#) are used as the primary network interface for communicating with the Esp32 server. The Helpful Articles section contains additional resources that explain how these work in more detail, so the rest of this section explains how sockets are implemented within this application to communicate with the ESP32 server.
 
-Every command sent to the server is managed by a unique thread that contains a unique connection which is responsible for sending and receiving data specific to that command. The EspClient component (EspClient.py) handles a majority of the functionality for connecting to the server, sending data, receiving data, and closing the connection. These methods are utilized by Tactile Sensor (TactileSensor.py) and Motor (L9110HMotor.py) components to perform their respective functions (e.g. reading tactile data or moving the gripper) with their respective clients.
+Every command sent to the server is managed by a separate thread that contains a unique connection responsible for sending and receiving data specific to that command. The EspClient component (EspClient.py) handles a majority of the functionality for connecting to the server, sending data, receiving data, and closing the connection. Thes EspClient is inherited by the Tactile Sensor (TactileSensor.py) and Motor (L9110HMotor.py) components to establish connections with the server and perform their respective functions (e.g. reading tactile data or moving the gripper).
 
 The process for communicating with the server through sockets is generally the same:
 1. Connect to the server
@@ -154,7 +154,7 @@ The process for communicating with the server through sockets is generally the s
 3. Receive data from the server
 4. Close the connection
 
-Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of ### bytes (in progress) is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to minimize the waste. For now, the prefixed size is small enough to avoid noticeable performance issues.
+Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of 64 bytes is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to optimize space. For now, the prefixed size is small enough to avoid noticeable performance issues.
 
 </details>
 
