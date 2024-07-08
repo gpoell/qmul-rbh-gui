@@ -10,13 +10,13 @@
 This application was created to provide a graphical interface for the [soft robotic gripper](https://github.com/gpoell/qmul-rbh-esp32) that can remotely operate the gripper, visualize real time tactile sensor data to understand grip forces, and record the tactile data for machine-learning processes. The GUI is developed with [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components that make up the application while also preserving familiarity with the popular Python programming language taught to future students that may be interested in enhancing this tool for their research projects. To encourage future development of this GUI or similar applications, this README provides a thorough outline of the entire application, including detailed instructions on how to clone and run the application in a Python virtual environment, an overview of how components communicate with the robotic gripper and each other, information on how the repository and PyQt components are organized, and a list of additional resources to expand upon topics covered below.
 
 ## Table of Contents
-1. [Project Background](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#installation-and-dependencies)
-2. [Installation and Dependencies](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#installation-and-dependencies)
-3. [Running the Application](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#running-the-application)
-4. [Application Architecture](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#application-architecture)
-5. [PyQt Components](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#pyqt-components)
-6. [Repository Folder Structure](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#repository-folder-structure)
-7. [Helpful Articles](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#helpful-articles)
+1. [Project Background](#project-background)
+2. [Installation and Dependencies](#installation-and-dependencies)
+3. [Running the Application](#running-the-application)
+4. [Application Architecture](#application-architecture)
+5. [PyQt Components](#pyqt-components)
+6. [Repository Folder Structure](#repository-folder-structure)
+7. [Helpful Articles](#helpful-articles)
 
 ## Project Background
 My dissertation is focused on classifying strawberry ripeness using the tactile data from the soft robotic gripper. The goal is to develop a technique that emulates how we use our sense of touch to assess the quality of certain crops, like picking ripe avacados at a supermarket. Computer vision is a popular and efficient technique for assessing crop ripeness, especially now that modern cameras can see better than humans. However, not all crops show obvious signs of differentiable ripeness levels, and problems with computer vision still persist in occluded harvesting environments where cameras struggle to see through shadows or branches, which is still an issue while harvesting strawberries. Providing a simple technique using tactile data to reinforce what the camera sees with what the gripper feels could prove useful when harvesting in occluded environments and performing post harvest quality inspections.
