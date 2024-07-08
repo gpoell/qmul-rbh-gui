@@ -163,9 +163,13 @@ Most of the variation in the steps outlined above occurs while receiving data fr
 <details>
 <summary>Creating Components and Layout Management</summary>
 
-PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components must inherit from the QWidget class to properly render in the GUI.  
+PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components in this application inherit from the QWidget class to render in the GUI.  
 
-To conceptualize how the interface is built, everything is managed in boxes that may contain other boxes. The GUI itself is a large box with other smaller boxes aligned vertically and horizontally using layout management. For example, the Control Panel consists of two boxes of buttons that that are horizontally aligned. These buttons are grouped based on their Sensor (SensorControls.py) and Motor (MotorControls.py) functionality and are vertically aligned. For new contributors to this project, I encourage you to change the layout of the buttons to horizontal and flip how they are ordered in the Control Panel to get a feel for how the layouts work.
+To conceptualize how the interface is built, all of the components are organized in layout boxes. The GUI itself is a large box composed of smaller boxes vertically and horizontally aligned using PyQt's layout management. For example, as shown in the diagram below, the Desktop contains a Dashboard and Control Panel, and the Dashboard contains a data graph and a group of data labels. For new contributors to this project, I encourage you to change the layout of the data labels to horizontal and switch its order in the Dashboard to get a feel for how the layouts work.
+
+<picture>
+    <img src='docs/gui_component_layout.png'>
+</pictuer>
 
 Building further on this nested box concept is the hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of smaller containers (e.g. Console.py and ControlPanel.py) which consist of Components that consist of Widgets. This hierarchy is intended to help organize and modularize the code and improve maintainability.
 
