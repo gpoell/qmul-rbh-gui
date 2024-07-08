@@ -171,7 +171,7 @@ To conceptualize how the interface is built, all of the components are organized
     <img src='docs/gui_component_layout.png'>
 </pictuer>
 
-Building further on this nested box concept is the hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of smaller containers (e.g. Console.py and ControlPanel.py) which consist of Components that consist of Widgets. This hierarchy is intended to help organize and modularize the code and improve maintainability.
+Building further on this nested box concept is the hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of two smaller containers (Dashboard.py and ControlPanel.py) which consist of components that consist of widgets. This hierarchy is intended to help organize, encapsulate, and improve the maintainability of the code.
 
 Lastly, the creation of every container and component follows the same standard process:
 
