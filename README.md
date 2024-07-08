@@ -183,7 +183,7 @@ Lastly, the creation of every container and component follows the same standard 
 </details>
  
 ## Repository Folder Structure
-Below is a summary of how the code for the GUI is organized. It leverages a container, components, and utils architecture to modularize the major sections of the application, reusable components, and shared utility functions.
+Below is a summary of how the code for the GUI is organized. It leverages a container, components, and utils architecture to organize the major containers of the application, reusable components, and shared utility functions.
 
 📁src/ -- all source code for the application
 * 📁components/ -- reusable components shared throughout the application
