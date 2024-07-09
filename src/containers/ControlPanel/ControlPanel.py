@@ -14,3 +14,4 @@ class ControlPanel(QWidget):
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         mainbox.addWidget(self.sensor_ctrls)
         mainbox.addWidget(self.motor_ctrls)
+        mainbox.addStretch(1)

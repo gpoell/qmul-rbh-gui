@@ -1,7 +1,10 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal as Signal
 
 class MotorControls(QWidget):
+
+    sig_state_command = Signal(str, name="stateCommand")
+
     def __init__(self):
         super().__init__()
 
@@ -10,16 +13,16 @@ class MotorControls(QWidget):
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.open_btn = QPushButton("Open")
-        self.open_btn.clicked.connect(self.send_data)
+        self.open_btn.clicked.connect(lambda: self.emit_signal("open"))
 
         self.close_btn = QPushButton("Close")
-        self.close_btn.clicked.connect(self.send_data)
+        self.close_btn.clicked.connect(lambda: self.emit_signal("close"))
 
         mainbox = QVBoxLayout(self)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mainbox.setAlignment(Qt.AlignmentFlag.AlignTop)
         mainbox.addWidget(self.label)
         mainbox.addWidget(self.open_btn)
         mainbox.addWidget(self.close_btn)
 
-    def send_data(self):
-        print(self.sender().text())
+    def emit_signal(self, command):
+        self.sig_state_command.emit(command)
