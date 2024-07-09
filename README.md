@@ -2,12 +2,12 @@
 ## MSc Advanced Robotics
 ### Soft Robotic Gripper - Graphical User Interface
 
+## Overview
+This application was created to provide a graphical interface for the [soft robotic gripper](https://github.com/gpoell/qmul-rbh-esp32) that can remotely operate the gripper, visualize real time tactile sensor data to understand grip forces, and record the tactile data for machine-learning processes. The GUI is developed with [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components that make up the application while also preserving familiarity with the popular Python programming language taught to future students that may be interested in enhancing this tool for their research projects. To encourage future development of this GUI or similar applications, this README provides a thorough outline of the entire application, including detailed instructions on how to clone and run the application in a Python virtual environment, an overview of how components communicate with the robotic gripper and each other, information on how the repository and PyQt components are organized, and a list of additional resources to expand upon topics covered below.
+
 <picture>
     <img src='docs/gui_snapshot.png' width='600'>
 </pictuer>
-
-## Overview
-This application was created to provide a graphical interface for the [soft robotic gripper](https://github.com/gpoell/qmul-rbh-esp32) that can remotely operate the gripper, visualize real time tactile sensor data to understand grip forces, and record the tactile data for machine-learning processes. The GUI is developed with [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components that make up the application while also preserving familiarity with the popular Python programming language taught to future students that may be interested in enhancing this tool for their research projects. To encourage future development of this GUI or similar applications, this README provides a thorough outline of the entire application, including detailed instructions on how to clone and run the application in a Python virtual environment, an overview of how components communicate with the robotic gripper and each other, information on how the repository and PyQt components are organized, and a list of additional resources to expand upon topics covered below.
 
 ## Table of Contents
 1. [Project Background](#project-background)
