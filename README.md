@@ -1,24 +1,29 @@
-# QMUL MSc Advanced Robotics
-# Soft Robotic Gripper: Graphical User Interface
+# Queen Mary University of London
+## MSc Advanced Robotics
+### Soft Robotic Gripper - Graphical User Interface
 
 ## Overview
-This application serves as an interface for operating the soft [robotic gripper,](https://github.com/gpoell/qmul-rbh-esp32) visualizing its tactile sensor data, and collecting the tactile sensor data for additional processes such as integrating a Random Forest classification model for classifying strawberry ripeness. The GUI is developed with the Python framework [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components for managing its functionality.
+This application was created to provide a graphical interface for the [soft robotic gripper](https://github.com/gpoell/qmul-rbh-esp32) that can remotely operate the gripper, visualize real time tactile sensor data to understand grip forces, and record the tactile data for machine-learning processes. The GUI is developed with [PyQt](https://doc.qt.io/qtforpython-6/) to simplify the composition of graphical components that make up the application while also preserving familiarity with the popular Python programming language taught to future students that may be interested in enhancing this tool for their research projects. To encourage future development of this GUI or similar applications, this README provides a thorough outline of the entire application, including detailed instructions on how to clone and run the application in a Python virtual environment, an overview of how components communicate with the robotic gripper and each other, information on how the repository and PyQt components are organized, and a list of additional resources to expand upon topics covered below.
 
 <picture>
-    <img src='docs/gui_snapshot.png' width="400">
+    <img src='docs/gui_snapshot.png' width='650'>
 </pictuer>
 
 ## Table of Contents
-1. [Installation and Dependencies](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#installation-and-dependencies)
-2. [Running the Application](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#running-the-application)
-3. [Application Architecture](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#application-architecture)
-4. [PyQt Components](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#pyqt-components)
-5. [Repository Folder Structure](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#repository-folder-structure)
-6. [Helpful Articles](https://github.com/gpoell/qmul-rbh-gui/tree/feature-update-readme?tab=readme-ov-file#helpful-articles)
+1. [Project Background](#project-background)
+2. [Installation and Dependencies](#installation-and-dependencies)
+3. [Running the Application](#running-the-application)
+4. [Application Architecture](#application-architecture)
+5. [PyQt Components](#pyqt-components)
+6. [Repository Folder Structure](#repository-folder-structure)
+7. [Helpful Articles](#helpful-articles)
+
+## Project Background
+My dissertation is focused on classifying strawberry ripeness using the tactile data from the soft robotic gripper. The goal is to develop a technique that emulates how we use our sense of touch to assess the quality of certain crops, like picking ripe avocados at a supermarket. Computer vision is a popular and efficient technique for assessing crop ripeness, especially now that modern cameras can see better than humans. However, not all crops are visually differentiable based on their ripeness levels, and problems with computer vision persist in occluded harvesting environments where cameras struggle to see through shadows or branches, which is a particular issue while harvesting strawberries. Providing a simple technique using tactile data to reinforce what cameras see with what the gripper feels could prove useful when harvesting in occluded environments and performing post-harvest quality inspections.
 
 ## Installation and Dependencies
 ### Software
-Python3 is required to run this application and the latest download insturctions are found [here.](https://www.python.org/downloads/ "Python Downloads"). The current version used at the time of writing this documentation is 3.11.2.
+Python3 is required to run this application and the latest download instructions are found [here.](https://www.python.org/downloads/ "Python Downloads"). The current version used at the time of writing this documentation is 3.11.2.
 Software     | Version
 ------      | ------
 Python3        | latest
@@ -75,7 +80,7 @@ client:
 
 
 ## Application Architecture
-The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi. Commands sent to the server occur during events like pressing buttons. The buttons emit commands as [PyQt signals]() which are received by the State Machine's [PyQt Slots](). The State Machine is a centralized component responsible for monitoring the state of application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time.) and executing commands through seperate [threads]() which is vital for simultaneously reading tactile data and operating the gripper. Each thread maintains a connection with the server using [Python Sockets]() that follows the communication protocol outlined below. Incoming data received from the server is emitted to various GUI components to provide data for visualizations and information for the terminal.
+The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi, where commands are sent to the server through separate threads when clicking buttons. [PyQt Signals & Slots](https://doc.qt.io/qtforpython-6/overviews/signalsandslots.html) are the primary method which GUI components communicate with each other. The GUI buttons emit their respective commands as signals to the State Machine which actively listens for them through its slots. The State Machine is a centralized component that monitors the state of the application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time) and sends commands to the server through separate [threads](https://docs.python.org/3/library/threading.html). Each thread maintains a unique connection with the server using [Python Sockets](https://docs.python.org/3/library/socket.html) (see communication protocol outlined below) and is essential for simultaneously reading tactile data and operating the gripper. The server responds to the GUI requests and sends data back through the State Machine threads. The State Machine then emits the server data as signals to the various GUI visual components to be visualized in the dashboard and to update informative events in the terminal.
 
 <picture>
     <img src='docs/gui_architecture.png'>
@@ -97,7 +102,7 @@ When the Connect button (line 18, 19) is clicked, it executes the emit_signal() 
 33.    self.sig_state_command.emit(command)
 ```
 
-The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in seperate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
+The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in separate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
 
 <b>StateMachine.py</b>
 ```
@@ -141,7 +146,7 @@ Every command sent to the ESP32 server is communicated through a unique thread. 
 
 [Python Sockets](https://docs.python.org/3/library/socket.html#) are used as the primary network interface for communicating with the Esp32 server. The Helpful Articles section contains additional resources that explain how these work in more detail, so the rest of this section explains how sockets are implemented within this application to communicate with the ESP32 server.
 
-Every command sent to the server is managed by a unique thread that contains a unique connection which is responsible for sending and receiving data specific to that command. The EspClient component (EspClient.py) handles a majority of the functionality for connecting to the server, sending data, receiving data, and closing the connection. These methods are utilized by Tactile Sensor (TactileSensor.py) and Motor (L9110HMotor.py) components to perform their respective functions (e.g. reading tactile data or moving the gripper) with their respective clients.
+Every command sent to the server is managed by a separate thread that contains a unique connection responsible for sending and receiving data specific to that command. The EspClient component (EspClient.py) handles a majority of the functionality for connecting to the server, sending data, receiving data, and closing the connection. Thes EspClient is inherited by the Tactile Sensor (TactileSensor.py) and Motor (L9110HMotor.py) components to establish connections with the server and perform their respective functions (e.g. reading tactile data or moving the gripper).
 
 The process for communicating with the server through sockets is generally the same:
 1. Connect to the server
@@ -149,7 +154,7 @@ The process for communicating with the server through sockets is generally the s
 3. Receive data from the server
 4. Close the connection
 
-Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of ### bytes (in progress) is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to minimize the waste. For now, the prefixed size is small enough to avoid noticeable performance issues.
+Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of 64 bytes is always sent from the server and read until a null terminating character is received. Ideally, we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to optimize space. For now, the prefixed size is small enough to avoid noticeable performance issues.
 
 </details>
 
@@ -158,23 +163,27 @@ Most of the variation in the steps outlined above occurs while receiving data fr
 <details>
 <summary>Creating Components and Layout Management</summary>
 
-PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components must inherit from the QWidget class to properly render in the GUI.  
+PyQt provides a variety graphical components, such as buttons and text boxes, called QWidgets. Widgets are combined to create the Components and Containers that make up the entire application, and the order in which they are displayed is handled through [PyQt Layout Management](https://doc.qt.io/qtforpython-5/overviews/layout.html). Components in this application inherit from the QWidget class to render in the GUI.  
 
-To conceptualize how the interface is built, everything is managed in boxes that may contain other boxes. The GUI itself is a large box with other smaller boxes aligned vertically and horizontally using layout management. For example, the Control Panel consists of two boxes of buttons that that are horizontally aligned. These buttons are grouped based on their Sensor (SensorControls.py) and Motor (MotorControls.py) functionality and are vertically aligned. For new contributors to this project, I encourage you to change the layout of the buttons to horizontal and flip how they are ordered in the Control Panel to get a feel for how the layouts work.
+To conceptualize how the interface is built, all of the components are organized in layout boxes. The GUI itself is a large box composed of smaller boxes vertically and horizontally aligned using PyQt's layout management. For example, as shown in the diagram below, the Desktop contains a Dashboard and Control Panel, and the Dashboard contains a data graph and a group of data labels. For new contributors to this project, I encourage you to change the layout of the data labels to horizontal and switch its order in the Dashboard to get a feel for how the layouts work.
 
-Building further on this nested box concept is the hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of smaller containers (e.g. Console.py and ControlPanel.py) which consist of Components that consist of Widgets. This hierarchy is intended to help organize and modularize the code and improve maintainability.
+<picture>
+    <img src='docs/gui_component_layout.png'>
+</pictuer>
+
+Building further on this nested box concept is the hierarchy of how components are grouped. The largest grouping of components are considered containers. The Desktop is the largest container consisting of two smaller containers (Dashboard.py and ControlPanel.py) which consist of components that consist of widgets. This hierarchy is intended to help organize, encapsulate, and improve the maintainability of the code.
 
 Lastly, the creation of every container and component follows the same standard process:
 
 <b>Example: MotorControls.py</b>
-1. Create the main layout and any sublayouts
+1. Create the main layout and any sub layouts
 2. Create the widgets or components
 3. Add the widgets to the layouts
 
 </details>
  
 ## Repository Folder Structure
-Below is a summary of how the code for the GUI is organized. It leverages a container, components, and utils architecture to modularize the major sections of the application, reusable components, and shared utility functions.
+Below is a summary of how the code for the GUI is organized. It leverages a container, components, and utils architecture to organize the major containers of the application, reusable components, and shared utility functions.
 
 📁src/ -- all source code for the application
 * 📁components/ -- reusable components shared throughout the application

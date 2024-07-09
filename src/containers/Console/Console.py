@@ -31,7 +31,7 @@ class Console(QWidget):
         self.textEdit = QTextEdit()
         self.textEdit.setReadOnly(True)
         self.textEdit.setObjectName("console")
-        self.__border = "-"*80
+        self.__border = "-"*75
         self.__consoleHeader = "APPLICATION CONSOLE"
         self.insert_text(self.__border)
         self.insert_text(self.__consoleHeader)
