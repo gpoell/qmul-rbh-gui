@@ -19,11 +19,11 @@ This application was created to provide a graphical interface for the [soft robo
 7. [Helpful Articles](#helpful-articles)
 
 ## Project Background
-My dissertation is focused on classifying strawberry ripeness using the tactile data from the soft robotic gripper. The goal is to develop a technique that emulates how we use our sense of touch to assess the quality of certain crops, like picking ripe avacados at a supermarket. Computer vision is a popular and efficient technique for assessing crop ripeness, especially now that modern cameras can see better than humans. However, not all crops are visually distinguishable based on their ripeness levels, and problems with computer vision still persist in occluded harvesting environments where cameras struggle to see through shadows or branches, which is still an issue while harvesting strawberries. Providing a simple technique using tactile data to reinforce what the camera sees with what the gripper feels could prove useful when harvesting in occluded environments and performing post harvest quality inspections.
+My dissertation is focused on classifying strawberry ripeness using the tactile data from the soft robotic gripper. The goal is to develop a technique that emulates how we use our sense of touch to assess the quality of certain crops, like picking ripe avocados at a supermarket. Computer vision is a popular and efficient technique for assessing crop ripeness, especially now that modern cameras can see better than humans. However, not all crops are visually differentiable based on their ripeness levels, and problems with computer vision persist in occluded harvesting environments where cameras struggle to see through shadows or branches, which is a particular issue while harvesting strawberries. Providing a simple technique using tactile data to reinforce what cameras see with what the gripper feels could prove useful when harvesting in occluded environments and performing post-harvest quality inspections.
 
 ## Installation and Dependencies
 ### Software
-Python3 is required to run this application and the latest download insturctions are found [here.](https://www.python.org/downloads/ "Python Downloads"). The current version used at the time of writing this documentation is 3.11.2.
+Python3 is required to run this application and the latest download instructions are found [here.](https://www.python.org/downloads/ "Python Downloads"). The current version used at the time of writing this documentation is 3.11.2.
 Software     | Version
 ------      | ------
 Python3        | latest
@@ -80,7 +80,7 @@ client:
 
 
 ## Application Architecture
-The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi, where commands are sent to the server through separate threads when clicking buttons. [PyQt Signals & Slots](https://doc.qt.io/qtforpython-6/overviews/signalsandslots.html) are the primary method which GUI components communicate with each other. The GUI buttons emit their respective commands as signals to the State Machine which actively listens for them through its slots. The State Machine is a centralized component that monitors the state of the application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time) and sends commands to the server through seperate [threads](https://docs.python.org/3/library/threading.html). Each thread maintains a unique connection with the server using [Python Sockets](https://docs.python.org/3/library/socket.html) (see communication protocol outlined below) and is essential for simultaneously reading tactile data and operating the gripper. The server responds to the GUI requests and sends data back through the State Machine threads. The State Machine then emits the server data as signals to the various GUI visual components to be visualized in the dashboard and to update informative events in the terminal.
+The GUI is a multithreaded application that communicates with the ESP32 server over Wi-Fi, where commands are sent to the server through separate threads when clicking buttons. [PyQt Signals & Slots](https://doc.qt.io/qtforpython-6/overviews/signalsandslots.html) are the primary method which GUI components communicate with each other. The GUI buttons emit their respective commands as signals to the State Machine which actively listens for them through its slots. The State Machine is a centralized component that monitors the state of the application to ensure events are triggered at the appropriate time (e.g. the gripper cannot open and close at the same time) and sends commands to the server through separate [threads](https://docs.python.org/3/library/threading.html). Each thread maintains a unique connection with the server using [Python Sockets](https://docs.python.org/3/library/socket.html) (see communication protocol outlined below) and is essential for simultaneously reading tactile data and operating the gripper. The server responds to the GUI requests and sends data back through the State Machine threads. The State Machine then emits the server data as signals to the various GUI visual components to be visualized in the dashboard and to update informative events in the terminal.
 
 <picture>
     <img src='docs/gui_architecture.png'>
@@ -102,7 +102,7 @@ When the Connect button (line 18, 19) is clicked, it executes the emit_signal() 
 33.    self.sig_state_command.emit(command)
 ```
 
-The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in seperate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
+The State Machine has a slot decorator (line 41) that actively listens for string signals with the name "stateCommand" and uses the value to determine which processes to run in separate threads (line 42, 58). In this scenario, the "connect" signal executes the Tactile Sensor connect method (line 60).
 
 <b>StateMachine.py</b>
 ```
@@ -154,7 +154,7 @@ The process for communicating with the server through sockets is generally the s
 3. Receive data from the server
 4. Close the connection
 
-Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of 64 bytes is always sent from the server and read until a null terminating character is received. Ideally we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to optimize space. For now, the prefixed size is small enough to avoid noticeable performance issues.
+Most of the variation in the steps outlined above occurs while receiving data from the server, specifically with reading messages from the server buffer. It is required to specify the size of the buffer to read, and the size of every message varies which can cause information to overflow and spawn downstream issues. To simplify the protocol, a fixed message size of 64 bytes is always sent from the server and read until a null terminating character is received. Ideally, we would want to determine the length of each message prior to reading it, possibly through prefixing messages with headers, to optimize space. For now, the prefixed size is small enough to avoid noticeable performance issues.
 
 </details>
 
@@ -176,7 +176,7 @@ Building further on this nested box concept is the hierarchy of how components a
 Lastly, the creation of every container and component follows the same standard process:
 
 <b>Example: MotorControls.py</b>
-1. Create the main layout and any sublayouts
+1. Create the main layout and any sub layouts
 2. Create the widgets or components
 3. Add the widgets to the layouts
 
