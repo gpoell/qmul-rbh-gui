@@ -86,3 +86,10 @@ class TactileSensor(QObject):
         client.connect()
         client.send_data("disconnect")
         client.close()
+
+    def calibrate(self):
+        """Sends command to calibrate tactile sensor."""
+        client = EspClient()
+        client.connect()
+        client.send_data("calibrate")
+        client.close()
