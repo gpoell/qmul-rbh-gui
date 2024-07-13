@@ -18,15 +18,18 @@ class SensorControls(QWidget):
         self.connect_btn = QPushButton("Connect")
         self.connect_btn.clicked.connect(lambda: self.emit_signal("connect"))
 
-        # Temporary Disconnect
         self.disconnect_btn = QPushButton("Disconnect")
         self.disconnect_btn.clicked.connect(lambda: self.emit_signal("disconnect"))
+
+        self.calibrate_btn = QPushButton("Calibrate")
+        self.calibrate_btn.clicked.connect(lambda: self.emit_signal("calibrate"))
 
         mainbox = QVBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         mainbox.addWidget(self.label)
         mainbox.addWidget(self.connect_btn)
         mainbox.addWidget(self.collect_btn)
+        mainbox.addWidget(self.calibrate_btn)
         mainbox.addWidget(self.disconnect_btn)
 
     def emit_signal(self, command):

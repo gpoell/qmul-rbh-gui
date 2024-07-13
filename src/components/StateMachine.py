@@ -52,6 +52,7 @@ class StateMachine(QObject):
                     - read: continuously read tactile sensor data
                     - connect: tests connection with ESP32 server
                     - collect: collects a sample of data from tactile sensor
+                    - calibrate: calibrates sensor based on sample size set on ESP32 server
                     - open: opens motor at predetermined duration on ESP32 server
                     - close: closes motor at predetermined duration on ESP32 server
         """
@@ -67,6 +68,9 @@ class StateMachine(QObject):
             case "collect":
                 console_message["body"] = "Collecting tactile sensor data..."
                 worker = ThreadWorker(self.tactile_sensor.collect)
+            case "calibrate":
+                console_message["body"] = "Calibrating tactile sensor..."
+                worker = ThreadWorker(self.tactile_sensor.calibrate)
             case "open":
                 console_message["body"] = "Opening Gripper..."
                 self.sig_console_msg.emit(console_message)
