@@ -45,7 +45,7 @@ class TactileSensor(QObject):
             batch = client.receive_data(64)
             if not batch : break
             batch = batch.split(',')
-
+            if len(batch) < 3: continue
             # Collect data when the collect button is pressed
             if self.collect_flag:
                 self.collect_data.append([batch[0], batch[1], batch[2]])
