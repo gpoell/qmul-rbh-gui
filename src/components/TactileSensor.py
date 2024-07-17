@@ -92,7 +92,10 @@ class TactileSensor(QObject):
 
         # Collect data or test against classification model
         if config["mode"] == "collect": write_csv(data, "tennisball")
-        if config["mode"] == "detect": classify_object(data)
+        if config["mode"] == "detect":
+            avg_data = self._average_tactile_data(data)
+            prediction = classify_object(avg_data)
+            print(prediction) # future change to emit to console
 
     def disconnect(self):
         """Sends command to stop reading data from sensor"""
