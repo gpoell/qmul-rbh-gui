@@ -15,7 +15,7 @@ Methods:
 
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 from components.EspClient import EspClient
-from utils.datalog import write_csv
+from utils.datalog import write_csv, classify_object
 from statistics import fmean
 
 class TactileSensor(QObject):
@@ -65,27 +65,34 @@ class TactileSensor(QObject):
         self.state = "idle"
 
 
-    def collect(self, sample=20):
+    def collect(self, config={'sample': 20, 'mode': 'classify'}):
         """Collects a sample (default=20) of tactile sensor data and stores it in CSV file"""
 
-        if self.state != "connected":
-            print("[WARNING]: Tactile Sensor must be reading data in order to collect data.")
-            return
+        # Establish connection and send command
+        client = EspClient()
+        client.connect()
+        client.send_data("collect") # send sample size?
+
+        # Read acknowledge bit response from server
+        batch = client.receive_data(1)
         
-        # Start collecting data
-        self.collect_flag = True
+        # Capture data to write to the csv file
+        data = []
 
-        # Wait for collected data to reach sample length
-        while len(self.collect_data) < sample: continue
+        while batch != '':
+            batch = client.receive_data(64)
+            if not batch : break
+            batch = batch.split(',')
+            if len(batch) < 3: continue
+            batch = [f"{float(num):.2f}" for num in batch]
+            data.append([batch[0], batch[1], batch[2]])
+        
+        # Close client connection
+        client.close()
 
-        # Stop collecting data
-        self.collect_flag = False
-
-        # Write data to CSV file
-        write_csv(self.collect_data)
-
-        # Reset collected data list
-        self.collect_data = []
+        # Collect data or test against classification model
+        if config["mode"] == "collect": write_csv(data, "tennisball")
+        if config["mode"] == "classify": classify_object(data)
 
     def disconnect(self):
         """Sends command to stop reading data from sensor"""
