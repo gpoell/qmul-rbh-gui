@@ -65,7 +65,7 @@ class TactileSensor(QObject):
         self.state = "idle"
 
 
-    def collect(self, config={'sample': 20, 'mode': 'classify'}):
+    def collect(self, config={'sample': 20, 'mode': 'detect'}):
         """Collects a sample (default=20) of tactile sensor data and stores it in CSV file"""
 
         # Establish connection and send command
@@ -92,7 +92,7 @@ class TactileSensor(QObject):
 
         # Collect data or test against classification model
         if config["mode"] == "collect": write_csv(data, "tennisball")
-        if config["mode"] == "classify": classify_object(data)
+        if config["mode"] == "detect": classify_object(data)
 
     def disconnect(self):
         """Sends command to stop reading data from sensor"""
