@@ -43,9 +43,15 @@ class TactileSensor(QObject):
 		# Continuously process data until null bit terminator is received
         while batch != '':
             batch = client.receive_data(64)
+
+            # Validate message size and split on delimiter
             if not batch : break
             batch = batch.split(',')
             if len(batch) < 3: continue
+            
+            # Format batch messages with 2 decimal precision
+            batch = [f"{float(num):.2f}" for num in batch]
+            
             # Collect data when the collect button is pressed
             if self.collect_flag:
                 self.collect_data.append([batch[0], batch[1], batch[2]])
