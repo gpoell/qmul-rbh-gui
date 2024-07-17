@@ -15,10 +15,10 @@ def classify_object(data, file="model.pkl", dir="data"):
     """Predicts the classification of an object based using the ML model"""
     
     path = data + '/' + file
+
     with open(path, 'rb') as f:
         model = pickle.load(f)
 
-    # Create Data Frame
     df = pd.DataFrame(data=[data], columns=["tactile_x", "tactile_y", "tactile_z"])
 
     return model.predict(df)
