@@ -16,6 +16,7 @@ Methods:
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 from components.EspClient import EspClient
 from utils.datalog import write_csv
+from statistics import fmean
 
 class TactileSensor(QObject):
 
@@ -99,3 +100,11 @@ class TactileSensor(QObject):
         client.connect()
         client.send_data("calibrate")
         client.close()
+
+    def _average_tactile_data(self, data):
+        """Returns the average X, Y, Z values of a tactile data set"""
+        return [
+            round(fmean([float(x[0]) for x in data]), 2),
+            round(fmean([float(y[1]) for y in data]), 2),
+            round(fmean([float(z[2]) for z in data]), 2)
+        ]
