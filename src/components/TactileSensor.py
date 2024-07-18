@@ -15,7 +15,8 @@ Methods:
 
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 from components.EspClient import EspClient
-from utils.datalog import write_csv
+from utils.datalog import write_csv, classify_object
+from statistics import fmean
 
 class TactileSensor(QObject):
 
@@ -43,9 +44,15 @@ class TactileSensor(QObject):
 		# Continuously process data until null bit terminator is received
         while batch != '':
             batch = client.receive_data(64)
+
+            # Validate message size and split on delimiter
             if not batch : break
             batch = batch.split(',')
-
+            if len(batch) < 3: continue
+            
+            # Format batch messages with 2 decimal precision
+            batch = [f"{float(num):.2f}" for num in batch]
+            
             # Collect data when the collect button is pressed
             if self.collect_flag:
                 self.collect_data.append([batch[0], batch[1], batch[2]])
@@ -58,27 +65,37 @@ class TactileSensor(QObject):
         self.state = "idle"
 
 
-    def collect(self, sample=20):
+    def collect(self, config={'sample': 20, 'mode': 'detect'}):
         """Collects a sample (default=20) of tactile sensor data and stores it in CSV file"""
 
-        if self.state != "connected":
-            print("[WARNING]: Tactile Sensor must be reading data in order to collect data.")
-            return
+        # Establish connection and send command
+        client = EspClient()
+        client.connect()
+        client.send_data("collect") # send sample size?
+
+        # Read acknowledge bit response from server
+        batch = client.receive_data(1)
         
-        # Start collecting data
-        self.collect_flag = True
+        # Capture data to write to the csv file
+        data = []
 
-        # Wait for collected data to reach sample length
-        while len(self.collect_data) < sample: continue
+        while batch != '':
+            batch = client.receive_data(64)
+            if not batch : break
+            batch = batch.split(',')
+            if len(batch) < 3: continue
+            batch = [f"{float(num):.2f}" for num in batch]
+            data.append([batch[0], batch[1], batch[2]])
+        
+        # Close client connection
+        client.close()
 
-        # Stop collecting data
-        self.collect_flag = False
-
-        # Write data to CSV file
-        write_csv(self.collect_data)
-
-        # Reset collected data list
-        self.collect_data = []
+        # Collect data or test against classification model
+        if config["mode"] == "collect": write_csv(data, "tennisball")
+        if config["mode"] == "detect":
+            avg_data = self._average_tactile_data(data)
+            prediction = classify_object(avg_data)
+            print(prediction) # future change to emit to console
 
     def disconnect(self):
         """Sends command to stop reading data from sensor"""
@@ -93,3 +110,11 @@ class TactileSensor(QObject):
         client.connect()
         client.send_data("calibrate")
         client.close()
+
+    def _average_tactile_data(self, data):
+        """Returns the average X, Y, Z values of a tactile data set"""
+        return [
+            round(fmean([float(x[0]) for x in data]), 2),
+            round(fmean([float(y[1]) for y in data]), 2),
+            round(fmean([float(z[2]) for z in data]), 2)
+        ]
