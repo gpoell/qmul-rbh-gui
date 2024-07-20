@@ -1,5 +1,5 @@
 QPushButton {
-    background-color: #AFBBAF;
+    background-color: #e4eee4;
     border-width: 2px;
     border-radius: 8px;
     border-color: #3B3B3B;
@@ -7,7 +7,6 @@ QPushButton {
     margin-top: 5px;
     font: bold 20px;
     min-width: 160px;
-    max-width: 160px;
     color: #3B3B3B;
 }
 
@@ -16,7 +15,7 @@ QPushButton:pressed {
 }
 
 QPushButton:hover {
-    background-color: lightgray;
+    background-color: #0C746A;
 }
 
 QLabel#container-label {

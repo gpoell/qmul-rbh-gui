@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton
 from PyQt6.QtCore import Qt, pyqtSignal as Signal
 
 class MotorControls(QWidget):
@@ -8,10 +8,6 @@ class MotorControls(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.label = QLabel("Motor Controls")
-        self.label.setObjectName("container-label")
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
         self.open_btn = QPushButton("Open")
         self.open_btn.clicked.connect(lambda: self.emit_signal("open"))
 
@@ -20,7 +16,6 @@ class MotorControls(QWidget):
 
         mainbox = QVBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        mainbox.addWidget(self.label)
         mainbox.addWidget(self.open_btn)
         mainbox.addWidget(self.close_btn)
 

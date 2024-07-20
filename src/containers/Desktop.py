@@ -28,6 +28,8 @@ class Desktop(QWidget):
         self.stateMachine.tactile_sensor.sig_console_msg.connect(self.console.update_console)
         control_panel.motor_ctrls.sig_state_command.connect(self.stateMachine.exec)
         control_panel.sensor_ctrls.sig_state_command.connect(self.stateMachine.exec)
+        control_panel.configOptions.sigTactileMode.connect(self.stateMachine.set_mode)
+        control_panel.configOptions.sigTactileClassifier.connect(self.stateMachine.set_object)
 
         # Add Containers to Layouts
         top.addWidget(self.dashboard)

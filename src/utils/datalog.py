@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 
-def write_csv(data, object="", file="tactile_sensor_data.csv", dir="data"):
+def write_csv(data, object, file="tactile_sensor_data.csv", dir="data"):
     """Writes data to a csv file at the specified path"""
 
     path = dir + '/' + file
