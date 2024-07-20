@@ -1,0 +1,17 @@
+client:
+  host: "192.168.0.11"
+  port: 5000
+gripper:
+  modes: ["collect", "classify"]
+  classifiers: ["tennisball", "syringe"]
+  tactile:
+    mode: "collect"
+    classifier: "tennisball"
+    samples: 20
+  motor:
+    duration: 500
+data:
+  directory: "data"
+  file: "tactile_sensor_data.csv"
+  model: "model.pkl"
+  columns: ["tactile_x", "tactile_y", "tactile_z"]
