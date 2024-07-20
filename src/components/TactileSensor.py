@@ -65,8 +65,8 @@ class TactileSensor(QObject):
         self.state = "idle"
 
 
-    def collect(self, config={'sample': 20, 'mode': 'detect'}):
-        """Collects a sample (default=20) of tactile sensor data and stores it in CSV file"""
+    def collect(self, config={"samples": 20, "mode": "collect", "classifier": ""}):
+        """Collects a sample of tactile sensor data and stores it in CSV file"""
 
         # Establish connection and send command
         client = EspClient()
@@ -91,8 +91,8 @@ class TactileSensor(QObject):
         client.close()
 
         # Collect data or test against classification model
-        if config["mode"] == "collect": write_csv(data, "tennisball")
-        if config["mode"] == "detect":
+        if config["mode"] == "collect": write_csv(data, config['classifier'])
+        if config["mode"] == "classify":
             avg_data = self._average_tactile_data(data)
             prediction = classify_object(avg_data)
             print(prediction) # future change to emit to console
