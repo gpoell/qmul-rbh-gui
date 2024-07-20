@@ -22,11 +22,14 @@ Methods:
 
     exec(<str> command)
     disconnect
+    set_mode
+    set_option
 """
 
 from PyQt6.QtCore import QThreadPool, QObject, QRunnable, pyqtSlot as Slot, pyqtSignal as Signal
 from components.TactileSensor import TactileSensor
 from components.L9110HMotor import L9110HMotor
+import yaml
 
 class StateMachine(QObject):
 
@@ -35,6 +38,7 @@ class StateMachine(QObject):
     def __init__(self):
         super().__init__()
         self.state = 'idle'
+        self.settings = self._set_settings()
         self.threadpool = QThreadPool()
         self.tactile_sensor = TactileSensor()
         self.motor = L9110HMotor()
@@ -67,7 +71,7 @@ class StateMachine(QObject):
                 worker = ThreadWorker(self.tactile_sensor.connect)
             case "collect":
                 console_message["body"] = "Collecting tactile sensor data..."
-                worker = ThreadWorker(self.tactile_sensor.collect)
+                worker = ThreadWorker(self.tactile_sensor.collect, config=self.settings["gripper"]["tactile"])
             case "calibrate":
                 console_message["body"] = "Calibrating tactile sensor..."
                 worker = ThreadWorker(self.tactile_sensor.calibrate)
@@ -91,7 +95,24 @@ class StateMachine(QObject):
         self.threadpool.start(worker)
         console_message["header"] = "info"
         self.sig_console_msg.emit(console_message)
-    
+
+    def _set_settings(self):
+        """Set the State Machine settings based on the application settings"""
+        with open("src/settings.yaml", 'r') as file:
+            settings = yaml.safe_load(file)
+            settings["gripper"]["tactile"]["mode"] = settings["gripper"]["modes"][0]
+            settings["gripper"]["tactile"]["classifier"] = settings["gripper"]["classifiers"][0]
+            return settings
+
+    @Slot(str, name="tactileMode")
+    def set_mode(self, slot_val):
+        """Sets the sensor collection mode based on dropdown selection in GUI"""
+        self.settings["gripper"]["tactile"]["mode"] = slot_val
+
+    @Slot(str, name="tactileClassifier")
+    def set_object(self, slot_val):
+        """Sets the classification label for the collection mode based on dropdown selection in GUI"""
+        self.settings["gripper"]["tactile"]["classifier"] = slot_val
 
 class ThreadWorker(QRunnable):
     def __init__(self, func, *args, **kwargs):
