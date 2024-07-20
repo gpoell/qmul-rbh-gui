@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton
 from PyQt6.QtCore import Qt, pyqtSignal as Signal
 
 class SensorControls(QWidget):
@@ -7,10 +7,6 @@ class SensorControls(QWidget):
 
     def __init__(self):
         super().__init__()
-
-        self.label = QLabel("Sensor Controls")
-        self.label.setObjectName("container-label")
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.collect_btn = QPushButton("Collect")
         self.collect_btn.clicked.connect(lambda: self.emit_signal("collect"))
@@ -23,14 +19,19 @@ class SensorControls(QWidget):
 
         self.calibrate_btn = QPushButton("Calibrate")
         self.calibrate_btn.clicked.connect(lambda: self.emit_signal("calibrate"))
+        
+        leftBox = QVBoxLayout()
+        leftBox.addWidget(self.connect_btn)
+        leftBox.addWidget(self.disconnect_btn)
 
-        mainbox = QVBoxLayout(self)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mainbox.addWidget(self.label)
-        mainbox.addWidget(self.connect_btn)
-        mainbox.addWidget(self.collect_btn)
-        mainbox.addWidget(self.calibrate_btn)
-        mainbox.addWidget(self.disconnect_btn)
+        rightBox= QVBoxLayout()
+        rightBox.addWidget(self.collect_btn)
+        rightBox.addWidget(self.calibrate_btn)
+
+        mainBox = QHBoxLayout(self)
+        mainBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mainBox.addLayout(leftBox)
+        mainBox.addLayout(rightBox)
 
     def emit_signal(self, command):
         self.sig_state_command.emit(command)
