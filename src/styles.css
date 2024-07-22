@@ -21,6 +21,25 @@ QPushButton:hover {
 QLabel#container-label {
     font: bold 20px;
     color: white;
+    border: 2px;
+    border-bottom-width: 2px;
+    border-bottom-color: white;
+    border-bottom-style: solid;
+    padding-bottom: 5px;
+}
+
+QLabel#configOptionLabel {
+    font: bold 18px;
+    color: white;
+    padding-right: 20px;
+}
+
+QComboBox {
+    min-width: 100px;
+    max-width: 120px;
+    font: 16px;
+    color: #3B3B3B;
+    background-color: whitesmoke;
 }
 
 #console{
