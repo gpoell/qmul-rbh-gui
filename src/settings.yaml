@@ -3,10 +3,10 @@ client:
   port: 5000
 gripper:
   modes: ["collect", "classify"]
-  classifiers: ["tennisball", "syringe"]
+  classifiers: ["balloon", "tennisball",]
   tactile:
     mode: "collect"
-    classifier: "tennisball"
+    classifier: "balloon"
     samples: 20
   motor:
     duration: 500
@@ -14,4 +14,4 @@ data:
   directory: "data"
   file: "tactile_sensor_data.csv"
   model: "model.pkl"
-  columns: ["tactile_x", "tactile_y", "tactile_z"]
+  columns: ["tactile_x", "tactile_y", "tactile_z", "abs_x", "abs_y", "abs_z", "magnitude"]
