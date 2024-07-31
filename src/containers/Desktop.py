@@ -24,8 +24,8 @@ class Desktop(QWidget):
 
         # Connect Signals and Slots
         self.stateMachine.sig_console_msg.connect(self.console.update_console)
-        self.stateMachine.tactile_sensor.sig_tactile_data.connect(self.dashboard.updateDashboard)
-        self.stateMachine.tactile_sensor.sig_console_msg.connect(self.console.update_console)
+        self.stateMachine.tactileSensor.sig_tactile_data.connect(self.dashboard.updateDashboard)
+        self.stateMachine.tactileSensor.sig_console_msg.connect(self.console.update_console)
         control_panel.motor_ctrls.sig_state_command.connect(self.stateMachine.exec)
         control_panel.sensor_ctrls.sig_state_command.connect(self.stateMachine.exec)
         control_panel.configOptions.sigTactileMode.connect(self.stateMachine.set_mode)
