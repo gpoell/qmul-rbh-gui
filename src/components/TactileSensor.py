@@ -17,6 +17,7 @@ from PyQt6.QtCore import QObject, pyqtSignal as Signal
 from components.EspClient import EspClient
 from utils.datalog import write_csv, classify_object
 from statistics import fmean
+from math import fsum
 
 class TactileSensor(QObject):
 
@@ -90,10 +91,13 @@ class TactileSensor(QObject):
         # Close client connection
         client.close()
 
+        # Compute Absolute and Magnitude Values of Tactile Data
+        data = self._absMagnitudeData(data)
+
         # Collect data or test against classification model
         if config["mode"] == "collect": write_csv(data, config['classifier'])
         if config["mode"] == "classify":
-            avg_data = self._average_tactile_data(data)
+            avg_data = self._average_tactile_features(data)
             prediction = classify_object(avg_data)
             print(prediction) # future change to emit to console
 
@@ -111,10 +115,19 @@ class TactileSensor(QObject):
         client.send_data("calibrate")
         client.close()
 
-    def _average_tactile_data(self, data):
-        """Returns the average X, Y, Z values of a tactile data set"""
-        return [
-            round(fmean([float(x[0]) for x in data]), 2),
-            round(fmean([float(y[1]) for y in data]), 2),
-            round(fmean([float(z[2]) for z in data]), 2)
-        ]
+    def _average_tactile_features(self, data):
+        """Returns the average feature values of a uniform tactile data set"""
+        feature_length = len(data[0])
+        avg_features = []
+        for i in range(feature_length):
+            avg_features.append(round(fmean([float(sample[i]) for sample in data]), 2))
+        return avg_features
+    
+    def _absMagnitudeData(self, data):
+        """Returns a new list appending the absolute and magnitude of the tactile values"""
+        result = data
+        for index, row in enumerate(result):
+            absData = [abs(float(val)) for val in row]
+            magnitude = round(fsum(val**2 for val in absData) ** 0.5, 2)
+            result[index] = row + absData + [magnitude]
+        return result
