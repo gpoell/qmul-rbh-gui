@@ -27,20 +27,20 @@ Methods:
 """
 
 from PyQt6.QtCore import QThreadPool, QObject, QRunnable, pyqtSlot as Slot, pyqtSignal as Signal
-from components.TactileSensor import TactileSensor
-from components.L9110HMotor import L9110HMotor
+from utils.client import TactileSensor, L9110HMotor
 import yaml
 
 class StateMachine(QObject):
 
     sig_console_msg = Signal(dict, name="consoleMessage")
+    sig_tactile_data = Signal(tuple, name='tactileData')
 
     def __init__(self):
         super().__init__()
         self.state = 'idle'
         self.settings = self._set_settings()
         self.threadpool = QThreadPool()
-        self.tactile_sensor = TactileSensor()
+        self.tactileSensor = TactileSensor()
         self.motor = L9110HMotor()
 
     @Slot(str, name="stateCommand")
@@ -68,24 +68,24 @@ class StateMachine(QObject):
             case "connect":
                 console_message["body"] = "Connecting to tactile sensor."
                 self.state = "running"
-                worker = ThreadWorker(self.tactile_sensor.connect)
+                worker = ThreadWorker(self.tactileSensor.read)
             case "collect":
                 console_message["body"] = "Collecting tactile sensor data..."
-                worker = ThreadWorker(self.tactile_sensor.collect, config=self.settings["gripper"]["tactile"])
+                settings = self.settings['gripper']['tactile']
+                worker = ThreadWorker(self.tactileSensor.collect, settings)
             case "calibrate":
                 console_message["body"] = "Calibrating tactile sensor..."
-                worker = ThreadWorker(self.tactile_sensor.calibrate)
+                worker = ThreadWorker(self.tactileSensor.calibrate)
             case "open":
                 console_message["body"] = "Opening Gripper..."
-                self.sig_console_msg.emit(console_message)
-                worker = ThreadWorker(lambda: self.motor.move("open"))
+                worker = ThreadWorker(self.motor.open)
             case "close":
                 console_message["body"] = "Closing Gripper..."
-                worker = ThreadWorker(lambda: self.motor.move("close"))
+                worker = ThreadWorker(self.motor.close)
             case "disconnect":
                 console_message["body"] = "Disconnecting tactile sensor thread."
                 self.state = "idle"
-                worker = ThreadWorker(self.tactile_sensor.disconnect)
+                worker = ThreadWorker(self.tactileSensor.disconnect)
             case _:
                 console_message["header"] = "warning"
                 console_message["body"] = "Command not recognized by server."
