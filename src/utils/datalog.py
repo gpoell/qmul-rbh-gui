@@ -1,5 +1,7 @@
 import pandas as pd
 import pickle
+from statistics import fmean
+from math import fsum
 
 def write_csv(data, object, file="tactile_sensor_data.csv", dir="data"):
     """Writes data to a csv file at the specified path"""
@@ -32,3 +34,36 @@ def decode_prediction(prediction):
     # Temporary - future configuration file will determine result
     if prediction == 0: return "Balloon"
     if prediction == 1: return "Tennis Ball"
+
+def average_tactile_features(data):
+        """Returns the average feature values of a uniform tactile data set"""
+        feature_length = len(data[0])
+        avg_features = []
+        for i in range(feature_length):
+            avg_features.append(round(fmean([float(sample[i]) for sample in data]), 2))
+        return avg_features
+    
+def absMagnitudeData(data):
+    """Returns a new list appending the absolute and magnitude of the tactile values"""
+    result = data
+    for index, row in enumerate(result):
+        absData = [abs(float(val)) for val in row]
+        magnitude = round(fsum(val**2 for val in absData) ** 0.5, 2)
+        result[index] = row + absData + [magnitude]
+    return result
+
+def processTactileData(settings, data):
+    """
+    Writes collected data to a csv file or classifies the object based on the GUI settings.
+    """
+    # Compute and add the magnitude and absolute tactile values
+    data = absMagnitudeData(data)
+
+    # Write data to a csv file or classify the object using the data model
+    mode = settings['mode']
+    label = settings["classifier"]
+    if mode == "collect": write_csv(data, label)
+    if mode == "classify":
+        avg_data = average_tactile_features(data)
+        prediction = classify_object(avg_data)
+        print(prediction) # future change to emit to console
