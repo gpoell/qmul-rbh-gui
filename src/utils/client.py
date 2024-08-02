@@ -15,6 +15,7 @@ CLASSES
 import socket
 import yaml
 from utils.datalog import processTactileData
+from utils.model import DataModel
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 
 
@@ -167,8 +168,8 @@ class TactileSensor(QObject):
 		self._collectTactileData()
 		
 		# Process the collected data based on the GUI mode and classifier
-		# settings = self.settings['gripper']['tactile']
-		processTactileData(settings, self.tactileData)
+		model = DataModel(self.tactileData)
+		model.processTactileData(mode=settings['mode'], label=settings["classifier"])
 
 		# Reset tactile data list
 		self.tactileData = []
