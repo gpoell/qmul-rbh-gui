@@ -46,7 +46,7 @@ QComboBox {
     background-color: #3B3B3B;
     border: 1px solid white;
     color: white;
-    font: bold 14px;
+    font: 14px;
 }
 
 #dataLabelValue {
