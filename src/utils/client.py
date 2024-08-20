@@ -15,6 +15,7 @@ CLASSES
 import socket
 import yaml
 from utils.datalog import processTactileData
+from utils.model import DataModel
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 
 
@@ -125,7 +126,11 @@ class TactileSensor(QObject):
 	def __init__(self):
 		super().__init__()
 		self.state = 'idle'
-		self.tactileData = []
+		self.tactileData = {
+			'x': [],
+			'y': [],
+			'z': [],
+		}
 		self.collectFlag = False
 
 	@WiFiClient(command="connect", buffersize=64)
@@ -154,9 +159,14 @@ class TactileSensor(QObject):
 		batch = batch.split(',')
 		if len(batch) < 4: return
 		del batch[-1]
-		batch = [f"{float(num):.2f}" for num in batch]
+		try:
+			batch = [round(float(num), 2) for num in batch]
+		except Exception:
+			print(batch)
 		
-		self.tactileData.append(batch)
+		self.tactileData['x'].append(batch[0])
+		self.tactileData['y'].append(batch[1])
+		self.tactileData['z'].append(batch[2])
 
 	def collect(self, settings):
 		"""
@@ -167,11 +177,13 @@ class TactileSensor(QObject):
 		self._collectTactileData()
 		
 		# Process the collected data based on the GUI mode and classifier
-		# settings = self.settings['gripper']['tactile']
-		processTactileData(settings, self.tactileData)
+		model = DataModel(self.tactileData)
+		model.processTactileData(mode=settings['mode'], label=settings["classifier"])
 
-		# Reset tactile data list
-		self.tactileData = []
+		# # Reset tactile data list
+		self.tactileData['x'].clear()
+		self.tactileData['y'].clear()
+		self.tactileData['z'].clear()
 
 	@WiFiClient(command="disconnect", buffersize=64)
 	def disconnect(self, batch):
