@@ -14,7 +14,6 @@ CLASSES
 
 import socket
 import yaml
-from utils.datalog import processTactileData
 from utils.model import DataModel
 from PyQt6.QtCore import QObject, pyqtSignal as Signal
 

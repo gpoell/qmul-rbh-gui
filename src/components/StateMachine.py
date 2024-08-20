@@ -29,6 +29,7 @@ Methods:
 from PyQt6.QtCore import QThreadPool, QObject, QRunnable, pyqtSlot as Slot, pyqtSignal as Signal
 from utils.client import TactileSensor, L9110HMotor
 import yaml
+import time
 
 class StateMachine(QObject):
 
@@ -78,7 +79,7 @@ class StateMachine(QObject):
                 worker = ThreadWorker(self.tactileSensor.calibrate)
             case "open":
                 console_message["body"] = "Opening Gripper..."
-                worker = ThreadWorker(self.motor.open)
+                worker = ThreadWorker(self.motor.open, command)
             case "close":
                 console_message["body"] = "Closing Gripper..."
                 worker = ThreadWorker(self.motor.close)
@@ -115,12 +116,15 @@ class StateMachine(QObject):
         self.settings["gripper"]["tactile"]["classifier"] = slot_val
 
 class ThreadWorker(QRunnable):
-    def __init__(self, func, *args, **kwargs):
+    def __init__(self, func, command):
         super(ThreadWorker, self).__init__()
         self.func = func
-        self.args = args
-        self.kwargs = kwargs
+        self.command = command
 
     @Slot()
     def run(self):
-        self.func(*self.args, **self.kwargs)
+        timeStart = time.perf_counter()
+        self.func()
+        timeEnd = time.perf_counter()
+        timeElapsed = timeEnd - timeStart
+        print(f"Command [{self.command.upper()}] took {timeElapsed} seconds.")
