@@ -1,8 +1,7 @@
 import pandas as pd
 import pickle
 import yaml
-from statistics import fmean, median
-from math import fsum
+from statistics import median, mean
 
 class DataModel:
     def __init__(self, data):
@@ -22,14 +21,11 @@ class DataModel:
             self.classifiers = conf['gripper']['classifiers']
             self.filePath = self.directory + '/' + self.file
 
-    def writeCSV(self, label, file, data):
-        ### Remove data and file parameter -- temporarily using for data collection ###
+    def writeCSV(self, data, label="None"):
         """
-        Writes data to a csv file at the specified path.
-        Expects a label to 
+        Writes a list of data to a csv file at the specified path.
         """
-        # filePath = self.directory + '/' + self.file
-        filePath = self.directory + '/' + file
+        filePath = self.directory + '/' + self.file
         with open(filePath, 'a+') as f:
             for row in data:
                 f.writelines(f"{value}," for value in row)
@@ -60,97 +56,64 @@ class DataModel:
         print(classifiers)
         return classifiers[prediction]
     
-    def averageData(self):
+    def updateAverageData(self):
         """
-        Returns a new list of average values for feature in a uniform tactile data set
+        Adds a new item to the self.data attribute containing a list of average axial values for X, Y, Z
         """
-        feature_length = len(self.data[0])
-        avg_features = []
-        for i in range(feature_length):
-            avg_features.append(round(fmean([float(sample[i]) for sample in self.data]), 2))
-        return avg_features
-    
-    def absoluteData(self):
-        """
-        Appends the absolute values of tactile data to the original list
-        """
-        for row in self.data:
-            self.data.append([abs(val) for val in row])
+        self.data['avg'] = {}
+        self.data['avg']['x'] = round(mean(self.data['x']), 2)
+        self.data['avg']['y'] = round(mean(self.data['y']), 2)
+        self.data['avg']['z'] = round(mean(self.data['z']), 2)
 
-    def absMagnitudeData(self):
+    def updateMedianData(self):
         """
-        Returns a new list of data with the additon of absolute and magnitude of the tactile values
+        Adds a new item to the self.data attribute containing a list of average axial values for X, Y, Z
         """
-        result = self.data
-        for index, row in enumerate(result):
-            absData = [abs(float(val)) for val in row]
-            magnitude = round(fsum(val**2 for val in absData) ** 0.5, 2)
-            result[index] = row + absData + [magnitude]
-        return result
+        self.data['med'] = {}
+        self.data['med']['x'] = round(median(self.data['x']), 2)
+        self.data['med']['y'] = round(median(self.data['y']), 2)
+        self.data['med']['z'] = round(median(self.data['z']), 2)
     
-    def restructureData(self):
-        x = [float(val[0]) for val in self.data]
-        y = [float(val[1]) for val in self.data]
-        z = [float(val[2]) for val in self.data]
-        return [x, y, z]
-    
-    def sequentialData(self):
+    def updateAbsoluteData(self):
         """
-        Returns a new list with data formatted sequentially and the average magnitude
+        Adds a new item to self.data containing the absolute axial values for X, Y, Z
         """
-        data = self.restructureData()
-        mag = []
-        for index, row in enumerate(self.data):
-            mag.append(round(fsum(float(val)**2 for val in row) ** 0.5, 2))
-        magAvg = round(fmean(mag), 2)
-        return [data[0] + data[1] + data[2] + [magAvg]]
-    
-    def avgMedMagData(self):
+        self.data['abs'] = {}
+        self.data['abs']['x'] = [abs(val) for val in self.data['x']]
+        self.data['abs']['y'] = [abs(val) for val in self.data['y']]
+        self.data['abs']['z'] = [abs(val) for val in self.data['z']]
+
+    def updateAvgMagnitudeData(self):
         """
-        Returns a new list with the average, median, and magnitude of the data
+        Adds a new item to self.data containing the average magnitude of all the axial values X, Y, Z.
         """
-        data = self.restructureData()
-        mag = []
-        avg = []
-        med = []
-        # Append average and median values in order of X, Y, Z
-        for row in data:
-            avg.append(round(fmean(row), 2))
-            med.append(round(median(row), 2))
-        # Calculate the magnitude of X, Y, Z values
-        for row in self.data:
-            mag.append(round(fsum(float(val)**2 for val in row) ** 0.5, 2))
-        magAvg = round(fmean(mag), 2)
-        return [avg + med + [magAvg]]
+        dataLen = len(self.data['x'])
+        magnitude = []
+        for i in range(dataLen):
+            res = (self.data['x'][i]**2 + self.data['y'][i]**2 + self.data['z'][i]**2) ** 0.5
+            magnitude.append(res)
+        self.data['magnitude'] = round(mean(magnitude), 2)
     
     def processTactileData(self, mode, label):
         """
         Writes collected data to a csv file or classifies the object based on the GUI settings.
         """
+        # Append the Statistical Characteristics
+        self.updateAverageData()
+        self.updateMedianData()
+        self.updateAvgMagnitudeData()
 
-        # Write data to a csv file or classify the object using the data model
-        if mode == "collect":
-            #### Sequential Method Testing ####
-            data = self.sequentialData()
-            if len(data[0]) != 31: print("error with sequential data")
-            file = "sequential_data.csv"
-            self.writeCSV(label, file, data)
+        # Concatenate Tactile Values
+        raw = self.data['x'] + self.data['y'] + self.data['z']
+        avgs = [val for val in self.data['avg'].values()]
+        meds = [val for val in self.data['med'].values()]
+        mag = [self.data['magnitude']]
+        data = [raw + avgs + meds + mag]
 
-            #### Avg, Med, Mag ####
-            data = self.avgMedMagData()
-            if len(data[0]) != 7: print("error with avgMedMag data")
-            file = "avg_med_mag_data.csv"
-            self.writeCSV(label, file, data)
+        # Collect Data or Classify Object based on mode 
+        if mode == "collect": 
+            self.writeCSV(data, label=label)
 
         if mode == "classify":
-            data = self.sequentialData()
-            # data = self.avgMedMagData()
-            # data = self.averageData()
             prediction = self.classifyObject(data)
             print(prediction) # future change to emit to console
-
-if __name__ == "__main__":
-    x = [1, 1]
-    y = [2, 2]
-    z = [4, 4]
-    print(x + y + z)
