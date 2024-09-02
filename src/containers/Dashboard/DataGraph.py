@@ -68,8 +68,8 @@ class DataGraph(QWidget):
             symbolBrush=0.9,
         )
 
-        mainbox = QVBoxLayout(self)
-        mainbox.addWidget(self.graph)
+        mainLayout = QVBoxLayout(self)
+        mainLayout.addWidget(self.graph)
 
     def plot(self, data):
         """

@@ -23,11 +23,10 @@ class Dashboard(QWidget):
         self.data_labels = DataLabels()
         self.data_graph = DataGraph()
 
-        mainbox = QHBoxLayout(self)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        mainbox.addWidget(self.data_graph)
-        mainbox.addWidget(self.data_labels)
+        mainLayout = QHBoxLayout(self)
+        mainLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mainLayout.addWidget(self.data_graph)
+        mainLayout.addWidget(self.data_labels)
 
     @Slot(tuple, name="tactileData")
     def updateDashboard(self, data):

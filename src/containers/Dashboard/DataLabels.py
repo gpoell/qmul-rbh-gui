@@ -26,12 +26,12 @@ class DataLabels(QWidget):
         self.yLabel = DataLabel(label="Y", color="#AFBBAF")
         self.zLabel = DataLabel(label="Z", color="#6F8695")
 
-        mainbox = QGridLayout(self)
-        mainbox.setVerticalSpacing(10)
-        mainbox.addWidget(self.header, 0, 0)
-        mainbox.addWidget(self.xLabel, 1, 0)
-        mainbox.addWidget(self.yLabel, 2, 0)
-        mainbox.addWidget(self.zLabel, 3, 0)
+        mainLayout = QGridLayout(self)
+        mainLayout.setVerticalSpacing(10)
+        mainLayout.addWidget(self.header, 0, 0)
+        mainLayout.addWidget(self.xLabel, 1, 0)
+        mainLayout.addWidget(self.yLabel, 2, 0)
+        mainLayout.addWidget(self.zLabel, 3, 0)
 
     def updateLabels(self, data):
         self.x.value.setText(data[0])

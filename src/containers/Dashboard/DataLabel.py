@@ -30,6 +30,6 @@ class DataLabel(QWidget):
         self.value.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setParent(self.frame)
 
-        mainbox = QHBoxLayout(self)
-        mainbox.addWidget(self.label)
-        mainbox.addWidget(self.value)
+        mainLayout = QHBoxLayout(self)
+        mainLayout.addWidget(self.label)
+        mainLayout.addWidget(self.value)
