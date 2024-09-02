@@ -43,10 +43,9 @@ class Console(QWidget):
             "error": "[ERROR]: ",
             "fatal": "[FATAL]: "
         }
-        self.messageTypes = list(self.messages.keys())
         
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.textEdit)
+        mainLayout = QVBoxLayout(self)
+        mainLayout.addWidget(self.textEdit)
 
     @Slot(dict, name="consoleMessage")
     def update_console(self, consoleMessage):
@@ -60,7 +59,7 @@ class Console(QWidget):
         
         message = ""
         
-        if consoleMessage["header"] not in self.messageTypes:
+        if consoleMessage["header"] not in self.messages:
             message = self.messages["error"] + "unsupported or missing header from message."
             return
         
