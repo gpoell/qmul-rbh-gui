@@ -22,17 +22,16 @@ class DataLabels(QWidget):
 
         self.header = QLabel("Magnetic Flux Density")
         self.header.setObjectName("dataLabelsHeader")
-        self.x = DataLabel("X", "#0C746A")
-        self.y = DataLabel("Y", "#AFBBAF")
-        self.z = DataLabel("Z", "#6F8695")
+        self.xLabel = DataLabel(label="X", color="#0C746A")
+        self.yLabel = DataLabel(label="Y", color="#AFBBAF")
+        self.zLabel = DataLabel(label="Z", color="#6F8695")
 
         mainbox = QGridLayout(self)
         mainbox.setVerticalSpacing(10)
-        
         mainbox.addWidget(self.header, 0, 0)
-        mainbox.addWidget(self.x, 1, 0)
-        mainbox.addWidget(self.y, 2, 0)
-        mainbox.addWidget(self.z, 3, 0)
+        mainbox.addWidget(self.xLabel, 1, 0)
+        mainbox.addWidget(self.yLabel, 2, 0)
+        mainbox.addWidget(self.zLabel, 3, 0)
 
     def updateLabels(self, data):
         self.x.value.setText(data[0])
