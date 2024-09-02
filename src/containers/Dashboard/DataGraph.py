@@ -7,36 +7,35 @@ Attributes:
 
     graph <PlotWidget>:             the main graph for plotting
     time <int>:                     timestamp recording for tactile data
-    tactile_data <float>:           dictionary containing arrays of 3 dimensional tactile data  
+    data <dict(float)>:                   dictionary containing arrays of 3 dimensional tactile data  
     line_x <graph>:                 line mapped to X tactile data values
     line_y <graph>:                 line mapped to Y tactile data values
     line_z <graph>:                 line mapped to Z tactile data values
 
 Methods:
 
-    update_plot:                    updates the line values on the graph when new tactile data is received
+    plot:                    updates the line values on the graph when new tactile data is received
 """
 
 from PyQt6.QtWidgets import QWidget, QVBoxLayout
 import pyqtgraph as pg
-import math
+from collections import deque
 
-class LineGraph(QWidget):
+class DataGraph(QWidget):
     def __init__(self):
         super().__init__()
-
-        mainbox = QVBoxLayout(self)
 
         self.graph = pg.PlotWidget(background="#3B3B3B")
         self.graph.showGrid(x=True,y=False)
         self.graph.setLabel("left", "Magnetic Flux Density")
         self.graph.setLabel("bottom", "Tactile Data Records")
 
-        self.time = list(range(10))
+        self.dataPoints = 10
+        self.time = deque(range(self.dataPoints), maxlen=10)
         self.data = {
-            "x": [0 for _ in range(10)],
-            "y": [0 for _ in range(10)],
-            "z": [0 for _ in range(10)]
+            "x": deque([0 for _ in range(self.dataPoints)], maxlen=10),
+            "y": deque([0 for _ in range(self.dataPoints)], maxlen=10),
+            "z": deque([0 for _ in range(self.dataPoints)], maxlen=10)
         }
 
         self.line_x = self.graph.plot(
@@ -69,20 +68,21 @@ class LineGraph(QWidget):
             symbolBrush=0.9,
         )
 
+        mainbox = QVBoxLayout(self)
         mainbox.addWidget(self.graph)
 
     def plot(self, data):
         """
         Updates the graph with new lines representing the 3 dimensional tactile data.
         The time and data values maintain their original length by removing the first
-        element and appending the new data to the end.
+        element and appending the new data to the end. The time and data deques
+        automatically remove the first element when new items are added that exceed
+        the maximum length.
         """
 
-        del self.time[0]
         self.time.append(self.time[-1] + 1)
 
         for (key, val) in zip(self.data, data):
-            del self.data[key][0]
             self.data[key].append(float(val))
         
         self.line_x.setData(self.time, self.data['x'])

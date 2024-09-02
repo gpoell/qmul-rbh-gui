@@ -14,14 +14,14 @@ Methods:
 from PyQt6.QtWidgets import QWidget, QHBoxLayout
 from PyQt6.QtCore import Qt, pyqtSlot as Slot
 from containers.Dashboard.DataLabels import DataLabels
-from components.LineGraph import LineGraph
+from containers.Dashboard.DataGraph import DataGraph
 
 class Dashboard(QWidget):
     def __init__(self):
         super().__init__()
 
         self.data_labels = DataLabels()
-        self.data_graph = LineGraph()
+        self.data_graph = DataGraph()
 
         mainbox = QHBoxLayout(self)
         mainbox.setAlignment(Qt.AlignmentFlag.AlignCenter)
