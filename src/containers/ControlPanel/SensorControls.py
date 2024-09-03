@@ -20,18 +20,18 @@ class SensorControls(QWidget):
         self.calibrate_btn = QPushButton("Calibrate")
         self.calibrate_btn.clicked.connect(lambda: self.emit_signal("calibrate"))
         
-        leftBox = QVBoxLayout()
-        leftBox.addWidget(self.connect_btn)
-        leftBox.addWidget(self.disconnect_btn)
+        leftBtnLayout = QVBoxLayout()
+        leftBtnLayout.addWidget(self.connect_btn)
+        leftBtnLayout.addWidget(self.disconnect_btn)
 
-        rightBox= QVBoxLayout()
-        rightBox.addWidget(self.collect_btn)
-        rightBox.addWidget(self.calibrate_btn)
+        rightBtnLayout = QVBoxLayout()
+        rightBtnLayout.addWidget(self.collect_btn)
+        rightBtnLayout.addWidget(self.calibrate_btn)
 
-        mainBox = QHBoxLayout(self)
-        mainBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mainBox.addLayout(leftBox)
-        mainBox.addLayout(rightBox)
+        mainLayout = QHBoxLayout(self)
+        mainLayout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        mainLayout.addLayout(leftBtnLayout)
+        mainLayout.addLayout(rightBtnLayout)
 
     def emit_signal(self, command):
         self.sig_state_command.emit(command)

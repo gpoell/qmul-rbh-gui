@@ -69,24 +69,24 @@ class StateMachine(QObject):
             case "connect":
                 console_message["body"] = "Connecting to tactile sensor."
                 self.state = "running"
-                worker = ThreadWorker(self.tactileSensor.read)
+                worker = ThreadWorker(self.tactileSensor.read, command)
             case "collect":
                 console_message["body"] = "Collecting tactile sensor data..."
                 settings = self.settings['gripper']['tactile']
                 worker = ThreadWorker(self.tactileSensor.collect, settings)
             case "calibrate":
                 console_message["body"] = "Calibrating tactile sensor..."
-                worker = ThreadWorker(self.tactileSensor.calibrate)
+                worker = ThreadWorker(self.tactileSensor.calibrate, command)
             case "open":
                 console_message["body"] = "Opening Gripper..."
                 worker = ThreadWorker(self.motor.open, command)
             case "close":
                 console_message["body"] = "Closing Gripper..."
-                worker = ThreadWorker(self.motor.close)
+                worker = ThreadWorker(self.motor.close, command)
             case "disconnect":
                 console_message["body"] = "Disconnecting tactile sensor thread."
                 self.state = "idle"
-                worker = ThreadWorker(self.tactileSensor.disconnect)
+                worker = ThreadWorker(self.tactileSensor.disconnect, command)
             case _:
                 console_message["header"] = "warning"
                 console_message["body"] = "Command not recognized by server."

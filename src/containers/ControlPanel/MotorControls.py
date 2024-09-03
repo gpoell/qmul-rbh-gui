@@ -14,10 +14,10 @@ class MotorControls(QWidget):
         self.close_btn = QPushButton("Close")
         self.close_btn.clicked.connect(lambda: self.emit_signal("close"))
 
-        mainbox = QVBoxLayout(self)
-        mainbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-        mainbox.addWidget(self.open_btn)
-        mainbox.addWidget(self.close_btn)
+        mainLayout = QVBoxLayout(self)
+        mainLayout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        mainLayout.addWidget(self.open_btn)
+        mainLayout.addWidget(self.close_btn)
 
     def emit_signal(self, command):
         self.sig_state_command.emit(command)
