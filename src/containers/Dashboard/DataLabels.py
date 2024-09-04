@@ -34,6 +34,6 @@ class DataLabels(QWidget):
         mainLayout.addWidget(self.zLabel, 3, 0)
 
     def updateLabels(self, data):
-        self.x.value.setText(data[0])
-        self.y.value.setText(data[1])
-        self.z.value.setText(data[2])
+        self.xLabel.value.setText(data[0])
+        self.yLabel.value.setText(data[1])
+        self.zLabel.value.setText(data[2])

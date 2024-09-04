@@ -53,6 +53,7 @@ class WiFiClient:
 				raise Exception
 			finally:
 				self._close()
+		wrapper.__name__ = func.__name__	# update name to function name for debugging
 		return wrapper
 
 	def _connect(self):
@@ -120,11 +121,9 @@ class TactileSensor(QObject):
 	"""
 
 	sig_tactile_data = Signal(tuple, name='tactileData')
-	sig_console_msg = Signal(dict, name="consoleMessage")
 
 	def __init__(self):
 		super().__init__()
-		self.state = 'idle'
 		self.tactileData = {
 			'x': [],
 			'y': [],
@@ -191,13 +190,11 @@ class TactileSensor(QObject):
 		self.console_message["body"] = f"Response from server: {batch}."
 
 	@WiFiClient(command="calibrate", buffersize=64)
-	def calibrate(self, batch):
+	def calibrate(self):
 		"""Sends command calibrate the tactile sensors on the gripper."""
-		self.console_message["header"] = "info"
-		self.console_message["body"] = f"Response from server: {batch}."
 
 
-class L9110HMotor(QObject):
+class L9110HMotor():
 	"""
 	The L9110HMotor contains methods for opening and closing the gripper.
 
@@ -205,24 +202,15 @@ class L9110HMotor(QObject):
 		open
 		close
 	"""
-	sig_console_msg = Signal(dict, name="consoleMessage")
-
-	def __init__(self):
-		super().__init__()
-		self.state = 'idle'
 
 	@WiFiClient(command="open", buffersize=64)
 	def open(self, batch):
 		"""
 		Sends command to open the gripper and logs responses to the console.
 		"""
-		self.console_message["header"] = "info"
-		self.console_message["body"] = f"Response from server: {batch}."
 
 	@WiFiClient(command="close", buffersize=64)
 	def close(self, batch):
 		"""
 		Sends command to close the gripper and logs responses to the console.
 		"""
-		self.console_message["header"] = "info"
-		self.console_message["body"] = f"Response from server: {batch}."

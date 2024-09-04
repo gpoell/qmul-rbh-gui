@@ -1,109 +1,79 @@
 """
-Creates a State Machine object.
-
 The State Machine serves as a centralized orchestrator for managing the application 
-state and executing sensor commands through multithreaded processes.
-
-Sensor commands are emitted by the GUI buttons as "stateCommand" signals. Sensor functions
-are processed through separate threads managed by the <ThreadWorkers> and <QThreadPool> classes.
-
-Classes:
-
-    StateMachine
+state and executing sensor commands through multithreaded processes. These asynchronous
+processes are created as <ThreadWorkers> and managed by the FSM's <QThreadPool> class.
+Gripper commands are emitted through the GUI button clicks as "stateCommand" signals. 
 
 Attributes:
 
-    state <str>
-    threadpool <QThreadPool>
-    tactile_sensor <TactileSensor>
-    motor <L9110HMotor>
+    - previousState <str>: tracks the previous state of commands, particularly for the 'idle' and 'connected' state
+                            to return to the appropriate state after any transition.
+    - state <str>: the current state of the GUI
+    - settings: a collection of settings outlined in the settings.yaml that inform the behavior of how the GUI
+                collects and processes data.
+    - threadpool <QThreadPool>: manages the execution of threadworkers that perform gripper tasks.
+    - tactile_sensor <TactileSensor>: facilitates gripper tasks related to the tactile sensor.
+    - motor <L9110HMotor>: facilitates motor operations for the gripper.
+    - logger <ConsoleLogger>: displays informative data to the Console on the GUI
+    - machine <Machine>: a state machine object that manages the transition of states on the gripper
 
 Methods:
 
-    exec(<str> command)
-    disconnect
-    set_mode
-    set_option
+    - exec(<str> command)
+    - set_mode
+    - set_object
+    - on_enter_<state>
+    - previous_state
+    - set_settings
 """
 
-from PyQt6.QtCore import QThreadPool, QObject, QRunnable, pyqtSlot as Slot, pyqtSignal as Signal
+from PyQt6.QtCore import QThreadPool, QObject, pyqtSlot as Slot
 from utils.client import TactileSensor, L9110HMotor
+from components.ConsoleLogger import ConsoleLogger
+from components.Threads import ThreadWorker
+from transitions import Machine
 import yaml
-import time
 
 class StateMachine(QObject):
 
-    sig_console_msg = Signal(dict, name="consoleMessage")
-    sig_tactile_data = Signal(tuple, name='tactileData')
-
     def __init__(self):
         super().__init__()
-        self.state = 'idle'
+        self.previousState = 'idle'
         self.settings = self._set_settings()
         self.threadpool = QThreadPool()
         self.tactileSensor = TactileSensor()
         self.motor = L9110HMotor()
+        self.logger = ConsoleLogger()
+        states = ['idle', 'connected', 'collecting', 'calibrating', 'opening', 'closing']
+        transitions = [
+            # Connect: transition from [idle] to [connected]
+            {'trigger': 'connect', 'source': 'idle', 'dest': 'connected'},
+            # Collect: transition from [connected] to [collecting] and return to previous state
+            {'trigger': 'collect', 'source': 'connected', 'dest': 'collecting', 'after': 'previous_state'},
+            # Calibrate: transition from [connected] to [calibrating] and return to previous state
+            {'trigger': 'calibrate', 'source': 'connected', 'dest': 'calibrating', 'after': 'previous_state'},
+            # Open: transition from [idle or connected] to [opening] and return to previous state
+            {'trigger': 'open', 'source': ['idle', 'connected'], 'dest': 'opening', 'after': 'previous_state'},
+            # Close: transition from [idle or connected] to [closing] and return to previous state
+            {'trigger': 'close', 'source': ['idle', 'connected'], 'dest': 'closing', 'after': 'previous_state'},
+            # Disconnect: transition from [connected] to [idle]
+            {'trigger': 'idle', 'source': 'connected', 'dest': 'idle'},
+        ]
+        self.machine = Machine(model=self, states=states, transitions=transitions, initial='idle', auto_transitions=False)
 
+    # Slot decorators that listen for incoming signals from GUI components and execute
+    # the functions they wrap underneath.
     @Slot(str, name="stateCommand")
     def exec(self, command):
-        """Orchestrates commands emmited by GUI buttons.
-
-            The GUI buttons emit signals to the State Machine which orchestrates
-            which sensor functions to execute in separate threads.
-    
-            Parameters:
-                command <str>: command emitted by buttons to execute on Esp32 server
-                    options:
-                    - read: continuously read tactile sensor data
-                    - connect: tests connection with ESP32 server
-                    - collect: collects a sample of data from tactile sensor
-                    - calibrate: calibrates sensor based on sample size set on ESP32 server
-                    - open: opens motor at predetermined duration on ESP32 server
-                    - close: closes motor at predetermined duration on ESP32 server
-        """
-        console_message = {
-            "header": "",
-            "body": ""
-        }
+        """Signals emitted from button click events trigger state transition methods."""
         match command:
-            case "connect":
-                console_message["body"] = "Connecting to tactile sensor."
-                self.state = "running"
-                worker = ThreadWorker(self.tactileSensor.read, command)
-            case "collect":
-                console_message["body"] = "Collecting tactile sensor data..."
-                settings = self.settings['gripper']['tactile']
-                worker = ThreadWorker(self.tactileSensor.collect, settings)
-            case "calibrate":
-                console_message["body"] = "Calibrating tactile sensor..."
-                worker = ThreadWorker(self.tactileSensor.calibrate, command)
-            case "open":
-                console_message["body"] = "Opening Gripper..."
-                worker = ThreadWorker(self.motor.open, command)
-            case "close":
-                console_message["body"] = "Closing Gripper..."
-                worker = ThreadWorker(self.motor.close, command)
-            case "disconnect":
-                console_message["body"] = "Disconnecting tactile sensor thread."
-                self.state = "idle"
-                worker = ThreadWorker(self.tactileSensor.disconnect, command)
-            case _:
-                console_message["header"] = "warning"
-                console_message["body"] = "Command not recognized by server."
-                self.sig_console_msg.emit(console_message)
-                return
-
-        self.threadpool.start(worker)
-        console_message["header"] = "info"
-        self.sig_console_msg.emit(console_message)
-
-    def _set_settings(self):
-        """Set the State Machine settings based on the application settings"""
-        with open("src/settings.yaml", 'r') as file:
-            settings = yaml.safe_load(file)
-            settings["gripper"]["tactile"]["mode"] = settings["gripper"]["modes"][0]
-            settings["gripper"]["tactile"]["classifier"] = settings["gripper"]["classifiers"][0]
-            return settings
+            case "connect": self.connect()
+            case "collect": self.collect()
+            case "calibrate": self.calibrate()
+            case "open": self.open()
+            case "close": self.close()
+            case "disconnect": self.idle()
+            case _: self.logger.warn(f"Command [{command}] not recognized by server.")
 
     @Slot(str, name="tactileMode")
     def set_mode(self, slot_val):
@@ -115,16 +85,52 @@ class StateMachine(QObject):
         """Sets the classification label for the collection mode based on dropdown selection in GUI"""
         self.settings["gripper"]["tactile"]["classifier"] = slot_val
 
-class ThreadWorker(QRunnable):
-    def __init__(self, func, command):
-        super(ThreadWorker, self).__init__()
-        self.func = func
-        self.command = command
 
-    @Slot()
-    def run(self):
-        timeStart = time.perf_counter()
-        self.func()
-        timeEnd = time.perf_counter()
-        timeElapsed = timeEnd - timeStart
-        print(f"Command [{self.command.upper()}] took {timeElapsed} seconds.")
+    # Transition functions between states execute sensor commands through the thread pool.
+    # The state machine follows the naming convention <on_enter_[state]> for performing
+    # functionality while entering the state.
+    def on_enter_connected(self):
+        self.logger.info("Connecting to tactile sensor and reading data...")
+        self.previousState = self.state
+        worker = ThreadWorker(self.tactileSensor.read, self.logger)
+        self.threadpool.start(worker)
+
+    def on_enter_calibrating(self):
+        self.logger.info("Calibrating tactile sensor...")
+        worker = ThreadWorker(self.tactileSensor.calibrate, self.logger)
+        self.threadpool.start(worker)
+
+    def on_enter_opening(self):
+        self.logger.info("Opening gripper...")
+        worker = ThreadWorker(self.motor.open, self.logger)
+        self.threadpool.start(worker)
+
+    def on_enter_closing(self):
+        self.logger.info("Closing gripper...")
+        worker = ThreadWorker(self.motor.close, self.logger)
+        self.threadpool.start(worker)
+
+    def on_enter_collecting(self):
+        self.logger.info("Collecting tactile sensor data...")
+        settings = self.settings['gripper']['tactile']
+        worker = ThreadWorker(self.tactileSensor.collect, self.logger, settings)
+        self.threadpool.start(worker)
+
+    def on_enter_idle(self):
+        self.logger.info("Gripper has resumed idle state...")
+        self.previousState = self.state
+        worker = ThreadWorker(self.tactileSensor.disconnect, self.logger)
+        self.threadpool.start(worker)
+
+    def previous_state(self):
+        self.state = self.previousState
+
+
+    # Initialization method for the FSM settings
+    def _set_settings(self):
+        """Set the State Machine settings based on the application settings"""
+        with open("src/settings.yaml", 'r') as file:
+            settings = yaml.safe_load(file)
+            settings["gripper"]["tactile"]["mode"] = settings["gripper"]["modes"][0]
+            settings["gripper"]["tactile"]["classifier"] = settings["gripper"]["classifiers"][0]
+            return settings
